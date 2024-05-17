@@ -1,18 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AddClaim from './Add_claim';
+import axiosInstance from '../../config/axiosConfig';
 
 const ClaimList = () => {
-  // Mock data
-  const claims = [
-    { id: "#VLZ001", title: "Error message when placing an order?", client: "Tonya Noble", assignedTo: "James Morris", createDate: "08 Dec, 2021", dueDate: "25 Jan, 2022", status: "Inprogress", priority: "High" },
-    // ...other claims
-  ];
-
+  const [claims, setClaims] = useState([]);
   const [showAddModal, setShowAddModal] = useState(false);
 
   const handleAddModal = () => {
     setShowAddModal(!showAddModal);
   };
+
+  useEffect(() => {
+    const fetchClaims = async () => {
+      try {
+        const building_id = '65e8c16b40b8b3418ee6a075';
+        const response = await axiosInstance.get(`/${building_id}/claims`);
+        console.log("Initial claim data:", response.data);
+        const claimsData = response.data.claims;
+
+        // Fetch details for each claim by its ID
+        const detailedClaims = await Promise.all(claimsData.map(async (claim) => {
+          const detailedResponse = await axiosInstance.get(`/${building_id}/claims/${claim._id}`);
+          console.log("Detailed claim data:", detailedResponse.data);
+          return detailedResponse.data.claim;
+        }));
+
+        setClaims(detailedClaims);
+      } catch (error) {
+        console.error('Error fetching claims:', error.response ? error.response.data : error.message);
+      }
+    };
+
+    fetchClaims();
+  }, []);
 
   return (
     <div className="row">
@@ -46,11 +66,8 @@ const ClaimList = () => {
                     <th>ID</th>
                     <th>Title</th>
                     <th>Client</th>
-                    <th>Assigned To</th>
                     <th>Create Date</th>
-                    <th>Due Date</th>
                     <th>Status</th>
-                    <th>Priority</th>
                     <th>Action</th>
                   </tr>
                 </thead>
@@ -62,14 +79,11 @@ const ClaimList = () => {
                           <input className="form-check-input" type="checkbox" value="option1" />
                         </div>
                       </td>
-                      <td><a href="javascript:void(0);" className="fw-medium link-primary">{claim.id}</a></td>
+                      <td><a href="javascript:void(0);" className="fw-medium link-primary">{claim._id}</a></td>
                       <td>{claim.title}</td>
-                      <td>{claim.client}</td>
-                      <td>{claim.assignedTo}</td>
-                      <td>{claim.createDate}</td>
-                      <td>{claim.dueDate}</td>
-                      <td><span className="badge badge-soft-warning text-uppercase">{claim.status}</span></td>
-                      <td><span className="badge bg-danger text-uppercase">{claim.priority}</span></td>
+                      <td>{claim.coOwner ? `${claim.coOwner.first_name} ${claim.coOwner.last_name}` : 'N/A'}</td>
+                      <td>{new Date(claim.createdAt).toLocaleDateString()}</td>
+                      <td><span className={`badge badge-soft-${claim.status === 'closed' ? 'success' : 'warning'} text-uppercase`}>{claim.status}</span></td>
                       <td>
                         <div className="dropdown">
                           <button className="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">

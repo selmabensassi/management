@@ -18,7 +18,7 @@ const AddClaim = ({ handleClose }) => {
     formData.append('title', title);
     formData.append('message', message);
     for (let i = 0; i < images.length; i++) {
-      formData.append('images', images[i]); // Ensure 'files' matches the field name expected by Multer
+      formData.append('images', images[i]); 
     }
 
     const building_id = '65e8c16b40b8b3418ee6a075';
