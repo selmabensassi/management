@@ -1,6 +1,6 @@
 import ClaimList from './claimList';
 import AddClaim from './Add_claim';
-import React, { useState, useEffect } from 'react';
+import React, {useRef, useState, useEffect } from 'react';
 import ReactApexChart from 'react-apexcharts';
 import axiosInstance from '../../config/axiosConfig';
 
@@ -84,10 +84,12 @@ const UnresolvedTicketsByPriority = () => {
   );
 };
 
-const NumberOfTickets = ({ series }) => {
-  console.log('Series data:', series); 
-  const total = series.reduce((acc, num) => acc + num, 0);
+const NumberOfTickets = ({ series, total }) => {
+  console.log('Series data:', series);
   console.log('Total:', total);
+
+  const chartRef = useRef(null);
+
   const options = {
     chart: {
       type: 'radialBar',
@@ -104,13 +106,29 @@ const NumberOfTickets = ({ series }) => {
           total: {
             show: true,
             label: 'Total',
-            formatter: () => total,
+            formatter: () => `${total}`,
           },
         },
       },
     },
     labels: ['Open', 'Inprogress', 'Closed', 'New'],
   };
+
+  useEffect(() => {
+    if (chartRef.current) {
+      chartRef.current.chart.updateOptions({
+        plotOptions: {
+          radialBar: {
+            dataLabels: {
+              total: {
+                formatter: () => `${total}`,
+              },
+            },
+          },
+        },
+      });
+    }
+  }, [total]);
 
   return (
     <div className="col-xl-6">
@@ -119,7 +137,7 @@ const NumberOfTickets = ({ series }) => {
           <h4 className="card-title mb-0">Number of Tickets</h4>
         </div>
         <div className="card-body">
-          <ReactApexChart options={options} series={series} type="radialBar" height={350} />
+          <ReactApexChart ref={chartRef} options={options} series={series} type="radialBar" height={350} />
         </div>
       </div>
     </div>
@@ -131,6 +149,7 @@ const Claim = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [stats, setStats] = useState([]);
   const [ticketCounts, setTicketCounts] = useState([0, 0, 0, 0]);
+  const [totalTickets, setTotalTickets] = useState(0);
 
   const handleAddModal = () => {
     setShowAddModal(!showAddModal);
@@ -150,7 +169,6 @@ const Claim = () => {
         const newTickets = claims.filter(claim => claim.status === 'new').length;
         const inprogressTickets = claims.filter(claim => claim.status === 'inprogress').length;
         const deletedTickets = 0; 
-        console.log('Ticket counts:', [openTickets, inprogressTickets, closedTickets, newTickets]);
 
         setStats([
           { title: "Total Tickets", count: totalTickets, change: "17.32%", icon: "ri-ticket-2-line", badgeClass: "bg-light text-success", arrowClass: "ri-arrow-up-line" },
@@ -160,12 +178,11 @@ const Claim = () => {
         ]);
 
         setTicketCounts([openTickets, inprogressTickets, closedTickets, newTickets]); 
+        setTotalTickets(totalTickets);
       } catch (error) {
         console.error('Error fetching claims:', error.response ? error.response.data : error.message);
       }
     };
-    console.log('Ticket counts:', ticketCounts);
-
 
     fetchClaims();
   }, []);
@@ -190,7 +207,7 @@ const Claim = () => {
           <div className="row">
             <UserCards stats={stats} />
             <UnresolvedTicketsByPriority />
-            <NumberOfTickets series={ticketCounts} />
+            <NumberOfTickets series={ticketCounts} total={totalTickets} />
           </div>
           <ClaimList onAddClick={handleAddModal} />
           {showAddModal && <AddClaim handleClose={handleAddModal} />}
@@ -199,5 +216,4 @@ const Claim = () => {
     </div>
   );
 };
-
 export default Claim;

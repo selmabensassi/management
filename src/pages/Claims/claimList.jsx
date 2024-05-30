@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { RiAddLine, RiDeleteBin2Line, RiMoreFill, RiEyeFill, RiPencilFill, RiDeleteBinFill } from 'react-icons/ri';
 import AddClaim from './Add_claim';
 import axiosInstance from '../../config/axiosConfig';
+import { Link } from 'react-router-dom';
 
 const ClaimList = () => {
   const [claims, setClaims] = useState([]);
   const [showAddModal, setShowAddModal] = useState(false);
+  const navigate = useNavigate();
 
   const handleAddModal = () => {
     setShowAddModal(!showAddModal);
@@ -34,6 +38,16 @@ const ClaimList = () => {
     fetchClaims();
   }, []);
 
+  const handleDelete = async (id) => {
+    try {
+      await axiosInstance.delete(`/claims/${id}`);
+      const updatedClaims = claims.filter(claim => claim._id !== id);
+      setClaims(updatedClaims);
+    } catch (error) {
+      console.error('Error deleting claim:', error);
+    }
+  };
+
   return (
     <div className="row">
       <div className="col-lg-12">
@@ -44,10 +58,10 @@ const ClaimList = () => {
               <div className="flex-shrink-0">
                 <div className="d-flex flex-wrap gap-2">
                   <button className="btn btn-danger add-btn" onClick={handleAddModal}>
-                    <i className="ri-add-line align-bottom me-1"></i> Create Tickets
+                    <RiAddLine className="align-bottom me-1" /> Create Tickets
                   </button>
                   <button className="btn btn-secondary">
-                    <i className="ri-delete-bin-2-line"></i>
+                    <RiDeleteBin2Line />
                   </button>
                 </div>
               </div>
@@ -85,15 +99,33 @@ const ClaimList = () => {
                       <td>{new Date(claim.createdAt).toLocaleDateString()}</td>
                       <td><span className={`badge badge-soft-${claim.status === 'closed' ? 'success' : 'warning'} text-uppercase`}>{claim.status}</span></td>
                       <td>
-                        <div className="dropdown">
-                          <button className="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i className="ri-more-fill align-middle"></i>
+                        <div className="d-flex gap-2">
+                          <Link 
+                          to={`/claim-dashboard/claim/${claim._id}/main`} 
+                          className="btn btn-soft-secondary btn-sm"
+                          >
+                     <RiEyeFill className="align-middle" />
+                        </Link>
+                          {/* <button 
+                            className="btn btn-soft-secondary btn-sm"
+                            onClick={() => navigate(`/claim-dashboard/claim/${claim._id}/main`)}
+                          >
+                            <RiEyeFill className="align-middle" />
+                          </button> */}
+                          <button 
+                            className="btn btn-soft-secondary btn-sm"
+                            onClick={() => navigate(`/claim-dashboard/claim/${claim._id}/edit`)}
+                          >
+                            <RiPencilFill className="align-middle" />
                           </button>
-                          <ul className="dropdown-menu dropdown-menu-end">
-                            <li><button className="dropdown-item"><i className="ri-eye-fill align-bottom me-2 text-muted"></i> View</button></li>
-                            <li><a className="dropdown-item edit-item-btn" href="#showModal" data-bs-toggle="modal"><i className="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit</a></li>
-                            <li><a className="dropdown-item remove-item-btn" data-bs-toggle="modal" href="#deleteOrder"><i className="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete</a></li>
-                          </ul>
+                          
+
+                          <button 
+                            className="btn btn-soft-secondary btn-sm"
+                            onClick={() => handleDelete(claim._id)}
+                          >
+                            <RiDeleteBinFill className="align-middle" />
+                          </button>
                         </div>
                       </td>
                     </tr>

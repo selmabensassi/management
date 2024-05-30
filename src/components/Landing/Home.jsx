@@ -28,7 +28,7 @@ const Home = () => {
                 <div className="row justify-content-center">
                     <div className="col-lg-8 col-sm-10">
                         <div className="text-center mt-lg-5 pt-5">
-                            <h1 className="display-6 fw-semibold mb-3 lh-base">The better way to manage your Building with <span className="text-success">Velzon </span></h1>
+                            <h1 className="display-6 fw-semibold mb-3 lh-base">The better way to manage your Building with <span className="text-success">Syndicate </span></h1>
                             <p className="lead text-muted lh-base">SyndicateManager is a comprehensive and dynamic platform tailored for syndicates, providing an intuitive solution to efficiently manage their buildings.</p>
                             <div className="d-flex gap-2 justify-content-center mt-4">
                                 <Link to="auth-signup-basic.html" className="btn btn-primary">Get Started <i className="ri-arrow-right-line align-middle ms-1"></i></Link>

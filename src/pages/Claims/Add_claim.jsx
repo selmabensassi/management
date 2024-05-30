@@ -47,10 +47,6 @@ const AddClaim = ({ handleClose }) => {
             <div className="modal-body">
               <div className="row g-3">
                 <div className="col-lg-12">
-                  <div id="modal-id">
-                    <label htmlFor="orderId" className="form-label">ID</label>
-                    <input type="text" id="orderId" className="form-control" placeholder="ID" value="#VLZ462" readOnly />
-                  </div>
                 </div>
                 <div className="col-lg-12">
                   <div>

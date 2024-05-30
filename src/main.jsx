@@ -26,6 +26,14 @@ import ContractManagement from './pages/contract/contractManagement';
 import Claim from './pages/Claims/claimDashboard';
 import ClaimList from './pages/Claims/claimList';
 import AddClaim from './pages/Claims/Add_claim';
+import InvoiceManagement from './pages/Billing/invoiceManagement';
+import InvoiceList from './pages/Billing/invoiceList';
+import CreateInvoice from  './pages/Billing/invoiceCreate';
+import MainContent from './pages/Claims/MainContent';
+import TicketDescription from './pages/Claims/TicketDescription';
+import TicketDetails from './pages/Claims/TicketDetails';
+import TicketHeader from './pages/Claims/TicketHeader';
+import Comments from './pages/Claims/Comments';
 
 
 
@@ -91,6 +99,20 @@ const router = createBrowserRouter([
         { path: 'claim', element: <Claim /> },
         { path: 'claim/add', element: <AddClaim /> },
         { path: 'claim/list', element: <ClaimList /> },
+		{ path: 'claim/:claim_id/main', element: <MainContent/> },
+		{ path: 'claim/description', element: <TicketDescription /> },
+      	{ path: 'claim/details', element: <TicketDetails /> },
+     	{ path: 'claim/header', element: <TicketHeader /> },
+      	{ path: 'claim/comments', element: <Comments /> },
+    ],
+},
+{
+    path: 'billing-dashboard',
+    element: <MainLayout />,
+    children: [
+        { path: 'billing', element: <InvoiceManagement /> },
+        { path: 'billing/add', element: <CreateInvoice/> },
+       { path: 'billing/list', element: <InvoiceList /> },
     ],
 },
 

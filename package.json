@@ -32,6 +32,8 @@
     "google-map-react": "^2.2.1",
     "iso-3166-1-alpha-2": "^1.0.2",
     "jquery": "^3.7.1",
+    "jspdf": "^2.5.1",
+    "jspdf-autotable": "^3.8.2",
     "latlng": "^1.0.0",
     "leaflet": "^1.9.4",
     "libphonenumber-js": "^1.10.61",
