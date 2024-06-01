@@ -1,47 +1,23 @@
-import React from 'react';
-// import PropTypes from 'prop-types';
+import React, { useContext } from 'react';
+import { UserContext } from './UserContext';
+import logo from '../../public/images/logo.png'; 
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import 'font-awesome/css/font-awesome.min.css';
+import { Link } from 'react-router-dom';
 
-const Navbar = ({ user, notifications = [], messages = [], searchPlaceholder }) => {
-  // Mock data to avoid errors until backend integration is complete
-  user = {
-    avatar: "assets/images/companies/img-8.png",
-    name: "Anna Adame",
-    role: "Founder"
-  };
+const Navbar = ({ searchPlaceholder }) => {
+  const context = useContext(UserContext);
 
-  notifications = [
-    {
-      link: "#",
-      icon: "bx bx-badge-check",
-      title: "Notification 1",
-      message: "Your Elite author Graphic Optimization reward is ready!",
-      type: "info",
-      time: "Just 30 sec ago"
-    },
-    {
-      link: "#",
-      icon: "bx bx-message-square-dots",
-      title: "Notification 2",
-      message: "You have received 20 new messages in the conversation",
-      type: "danger",
-      time: "2 hrs ago"
-    }
-  ];
+  if (!context) {
+    return <div>Loading...</div>; 
+  }
 
-  messages = [
-    {
-      link: "#",
-      avatar: "assets/images/users/avatar-2.jpg",
-      name: "Angela Bernier",
-      role: "Manager"
-    },
-    {
-      link: "#",
-      avatar: "assets/images/users/avatar-3.jpg",
-      name: "David Grasso",
-      role: "Web Designer"
-    }
-  ];
+  const { userData: user, notifications, messages } = context;
+
+  if (!user) {
+    return <div>Loading...</div>; 
+  }
 
   return (
     <header className="navbar" style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 20px', backgroundColor: '#fff' }}>
@@ -49,21 +25,12 @@ const Navbar = ({ user, notifications = [], messages = [], searchPlaceholder }) 
         <div className="d-flex" style={{ flex: 1 }}>
           {/* LOGO */}
           <div className="navbar-brand-box horizontal-logo" style={{ display: 'flex', alignItems: 'center' }}>
-            <a href="index.html" className="logo logo-dark">
+            <a href="/" className="logo logo-dark">
               <span className="logo-sm">
-                <img src="assets/images/logo-sm.png" alt="" height="22" />
+                <img src={logo} alt="logo" height="22" />
               </span>
               <span className="logo-lg">
-                <img src="assets/images/logo-dark.png" alt="" height="17" />
-              </span>
-            </a>
-
-            <a href="index.html" className="logo logo-light">
-              <span className="logo-sm">
-                <img src="assets/images/logo-sm.png" alt="" height="22" />
-              </span>
-              <span className="logo-lg">
-                <img src="assets/images/logo-light.png" alt="" height="17" />
+                <img src={logo} alt="logo" height="17" />
               </span>
             </a>
           </div>
@@ -96,72 +63,6 @@ const Navbar = ({ user, notifications = [], messages = [], searchPlaceholder }) 
                 className="mdi mdi-close-circle search-widget-icon search-widget-icon-close d-none"
                 id="search-close-options"
               ></span>
-            </div>
-            <div className="dropdown-menu dropdown-menu-lg" id="search-dropdown">
-              <div data-simplebar style={{ maxHeight: '320px' }}>
-                {/* Recent Searches */}
-                <div className="dropdown-header">
-                  <h6 className="text-overflow text-muted mb-0 text-uppercase">Recent Searches</h6>
-                </div>
-
-                <div className="dropdown-item bg-transparent text-wrap">
-                  <a href="index.html" className="btn btn-soft-secondary btn-sm btn-rounded">
-                    how to setup <i className="mdi mdi-magnify ms-1"></i>
-                  </a>
-                  <a href="index.html" className="btn btn-soft-secondary btn-sm btn-rounded">
-                    buttons <i className="mdi mdi-magnify ms-1"></i>
-                  </a>
-                </div>
-
-                {/* Pages */}
-                <div className="dropdown-header mt-2">
-                  <h6 className="text-overflow text-muted mb-1 text-uppercase">Pages</h6>
-                </div>
-
-                {notifications.length > 0 ? (
-                  notifications.map((notification, index) => (
-                    <a key={index} href={notification.link} className="dropdown-item notify-item">
-                      <i className={`${notification.icon} align-middle fs-18 text-muted me-2`}></i>
-                      <span>{notification.title}</span>
-                    </a>
-                  ))
-                ) : (
-                  <div className="dropdown-item text-muted">No notifications</div>
-                )}
-
-                {/* Members */}
-                <div className="dropdown-header mt-2">
-                  <h6 className="text-overflow text-muted mb-2 text-uppercase">Members</h6>
-                </div>
-
-                <div className="notification-list">
-                  {messages.length > 0 ? (
-                    messages.map((message, index) => (
-                      <a key={index} href={message.link} className="dropdown-item notify-item py-2">
-                        <div className="d-flex">
-                          <img
-                            src={message.avatar}
-                            className="me-3 rounded-circle avatar-xs"
-                            alt="user-pic"
-                          />
-                          <div className="flex-1">
-                            <h6 className="m-0">{message.name}</h6>
-                            <span className="fs-11 mb-0 text-muted">{message.role}</span>
-                          </div>
-                        </div>
-                      </a>
-                    ))
-                  ) : (
-                    <div className="dropdown-item text-muted">No messages</div>
-                  )}
-                </div>
-              </div>
-
-              <div className="text-center pt-3 pb-1">
-                <a href="pages-search-results.html" className="btn btn-primary btn-sm">
-                  View All Results <i className="ri-arrow-right-line ms-1"></i>
-                </a>
-              </div>
             </div>
           </form>
         </div>
@@ -210,7 +111,7 @@ const Navbar = ({ user, notifications = [], messages = [], searchPlaceholder }) 
             >
               <img
                 id="header-lang-img"
-                src="assets/images/flags/us.svg"
+                src="assets/images/flags/us.svg" // Ensure the path is correct
                 alt="Header Language"
                 height="20"
                 className="rounded"
@@ -218,78 +119,17 @@ const Navbar = ({ user, notifications = [], messages = [], searchPlaceholder }) 
             </button>
             <div className="dropdown-menu dropdown-menu-end">
               {/* Language Items */}
-              <a href="javascript:void(0);" className="dropdown-item notify-item language py-2">
-                <img
-                  src="assets/images/flags/us.svg"
-                  alt="user-image"
-                  className="me-2 rounded"
-                  height="18"
-                />
-                <span className="align-middle">English</span>
-              </a>
-              <a href="javascript:void(0);" className="dropdown-item notify-item language">
-                <img
-                  src="assets/images/flags/spain.svg"
-                  alt="user-image"
-                  className="me-2 rounded"
-                  height="18"
-                />
-                <span className="align-middle">Española</span>
-              </a>
-              <a href="javascript:void(0);" className="dropdown-item notify-item language">
-                <img
-                  src="assets/images/flags/germany.svg"
-                  alt="user-image"
-                  className="me-2 rounded"
-                  height="18"
-                />
-                <span className="align-middle">Deutsche</span>
-              </a>
-              <a href="javascript:void(0);" className="dropdown-item notify-item language">
-                <img
-                  src="assets/images/flags/italy.svg"
-                  alt="user-image"
-                  className="me-2 rounded"
-                  height="18"
-                />
-                <span className="align-middle">Italiana</span>
-              </a>
-              <a href="javascript:void(0);" className="dropdown-item notify-item language">
-                <img
-                  src="assets/images/flags/russia.svg"
-                  alt="user-image"
-                  className="me-2 rounded"
-                  height="18"
-                />
-                <span className="align-middle">русский</span>
-              </a>
-              <a href="javascript:void(0);" className="dropdown-item notify-item language">
-                <img
-                  src="assets/images/flags/china.svg"
-                  alt="user-image"
-                  className="me-2 rounded"
-                  height="18"
-                />
-                <span className="align-middle">中国人</span>
-              </a>
-              <a href="javascript:void(0);" className="dropdown-item notify-item language">
-                <img
-                  src="assets/images/flags/french.svg"
-                  alt="user-image"
-                  className="me-2 rounded"
-                  height="18"
-                />
-                <span className="align-middle">français</span>
-              </a>
-              <a href="javascript:void(0);" className="dropdown-item notify-item language">
-                <img
-                  src="assets/images/flags/ae.svg"
-                  alt="user-image"
-                  className="me-2 rounded"
-                  height="18"
-                />
-                <span className="align-middle">Arabic</span>
-              </a>
+              {['us', 'spain', 'germany', 'italy', 'russia', 'china', 'french', 'ae'].map((lang) => (
+                <a key={lang} href="javascript:void(0);" className="dropdown-item notify-item language py-2">
+                  <img
+                    src={`assets/images/flags/${lang}.svg`} // Ensure these paths are correct
+                    alt="user-image"
+                    className="me-2 rounded"
+                    height="18"
+                  />
+                  <span className="align-middle">{lang}</span>
+                </a>
+              ))}
             </div>
           </div>
 
@@ -391,7 +231,7 @@ const Navbar = ({ user, notifications = [], messages = [], searchPlaceholder }) 
               <span className="d-flex align-items-center">
                 <img
                   className="rounded-circle header-profile-user"
-                  src={user.avatar}
+                  src={user.avatar} // Make sure the user avatar path is correct
                   alt="Header Avatar"
                 />
                 <span className="text-start ms-xl-2">
@@ -414,10 +254,10 @@ const Navbar = ({ user, notifications = [], messages = [], searchPlaceholder }) 
                 <i className="mdi mdi-message-text-outline text-muted fs-16 align-middle me-1"></i>
                 <span className="align-middle">Messages</span>
               </a>
-              <a className="dropdown-item" href="apps-tasks-kanban.html">
-                <i className="mdi mdi-calendar-check-outline text-muted fs-16 align-middle me-1"></i>
-                <span className="align-middle">Taskboard</span>
-              </a>
+
+               <Link to="/taskboard/taskboard" className="mdi mdi-calendar-check-outline text-muted fs-16 align-middle me-1">
+              <i className="align-middle"></i> <span>Taskboard</span>
+             </Link>
               <a className="dropdown-item" href="pages-faqs.html">
                 <i className="mdi mdi-lifebuoy text-muted fs-16 align-middle me-1"></i>
                 <span className="align-middle">Help</span>
@@ -449,73 +289,5 @@ const Navbar = ({ user, notifications = [], messages = [], searchPlaceholder }) 
     </header>
   );
 };
-
-// Mock data to avoid errors
-// const user = {
-//   avatar: "assets/images/companies/img-8.png",
-//   name: "Anna Adame",
-//   role: "Founder"
-// };
-
-// const notifications = [
-//   {
-//     link: "#",
-//     icon: "bx bx-badge-check",
-//     title: "Notification 1",
-//     message: "Your Elite author Graphic Optimization reward is ready!",
-//     type: "info",
-//     time: "Just 30 sec ago"
-//   },
-//   {
-//     link: "#",
-//     icon: "bx bx-message-square-dots",
-//     title: "Notification 2",
-//     message: "You have received 20 new messages in the conversation",
-//     type: "danger",
-//     time: "2 hrs ago"
-//   }
-// ];
-
-// const messages = [
-//   {
-//     link: "#",
-//     avatar: "assets/images/users/avatar-2.jpg",
-//     name: "Angela Bernier",
-//     role: "Manager"
-//   },
-//   {
-//     link: "#",
-//     avatar: "assets/images/users/avatar-3.jpg",
-//     name: "David Grasso",
-//     role: "Web Designer"
-//   }
-// ];
-
-// Navbar.propTypes = {
-//   user: PropTypes.shape({
-//     avatar: PropTypes.string,
-//     name: PropTypes.string,
-//     role: PropTypes.string,
-//   }).isRequired,
-//   notifications: PropTypes.arrayOf(
-//     PropTypes.shape({
-//       link: PropTypes.string,
-//       icon: PropTypes.string,
-//       title: PropTypes.string,
-//       message: PropTypes.string,
-//       type: PropTypes.string,
-//       time: PropTypes.string,
-//     })
-//   ),
-//   messages: PropTypes.arrayOf(
-//     PropTypes.shape({
-//       link: PropTypes.string,
-//       avatar: PropTypes.string,
-//       name: PropTypes.string,
-//       role: PropTypes.string,
-//     })
-//   ),
-//   searchPlaceholder: PropTypes.string,
-// };
 
 export default Navbar;

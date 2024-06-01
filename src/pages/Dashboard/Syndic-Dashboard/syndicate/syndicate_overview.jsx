@@ -52,6 +52,7 @@ const MapChart = ({ syndicateData }) => {
 
   const getCountryDetailsFromCode = (countryCode) => {
     const country = countries.all.find(c => c.countryCallingCodes.includes('+' + countryCode));
+    console.log("country details :",country);
     return {
       name: country.name,
     };

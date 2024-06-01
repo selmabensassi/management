@@ -34,9 +34,12 @@ import TicketDescription from './pages/Claims/TicketDescription';
 import TicketDetails from './pages/Claims/TicketDetails';
 import TicketHeader from './pages/Claims/TicketHeader';
 import Comments from './pages/Claims/Comments';
-
-
-
+import Taskboard from './pages/Taskboard/MainContent_Task';
+import Board from './pages/Taskboard/Board';
+import Task from './pages/Taskboard/Task';
+import Header from './pages/Taskboard/Header';
+import AddBoardModal from './pages/Taskboard/Modals';
+import AddTaskModal  from './pages/Taskboard/addtask';
 const router = createBrowserRouter([
 	{
 		path: '/',
@@ -113,6 +116,19 @@ const router = createBrowserRouter([
         { path: 'billing', element: <InvoiceManagement /> },
         { path: 'billing/add', element: <CreateInvoice/> },
        { path: 'billing/list', element: <InvoiceList /> },
+    ],
+},
+{
+    path: 'taskboard',
+    element: <MainLayout />,
+    children: [
+        { path: 'taskboard', element: <Taskboard /> },
+       { path: 'taskboard/addboard', element: <AddBoardModal/> },
+	 	{ path: 'taskboard/addtask', element: <AddTaskModal/> },
+       { path: 'taskboard/board', element: <Board/> },
+       { path: 'taskboard/task', element: <Task/> },
+       { path: 'taskboard/header', element: <Header/> },
+
     ],
 },
 

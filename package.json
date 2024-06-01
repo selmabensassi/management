@@ -29,6 +29,7 @@
     "country-telephone-data": "^0.6.3",
     "elasticsearch-browser": "^16.7.1",
     "events": "^3.3.0",
+    "font-awesome": "^4.7.0",
     "google-map-react": "^2.2.1",
     "iso-3166-1-alpha-2": "^1.0.2",
     "jquery": "^3.7.1",
