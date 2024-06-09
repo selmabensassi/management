@@ -30,9 +30,12 @@ const Plans = () => {
 
     const fetchLocation = async () => {
       try {
-        const response = await axios.get(`https://api.ipgeolocation.io/ipgeo?apiKey=YOUR_API_KEY`);
+        const response = await axios.get(`https://api.ipgeolocation.io/ipgeo?apiKey=400c7dc5699c423da53a5bdebfe6d0d2`);
         const countryCode = response.data.country_code2;
+         console.log('country code  :',countryCode)
+
         const countryDetails = getCountryDetailsFromCode(countryCode);
+        console.log('currency :',countryDetails)
         setCurrencySymbol(countryDetails.currency);
       } catch (error) {
         console.error('Error fetching location:', error);
@@ -45,9 +48,10 @@ const Plans = () => {
 
   const getCountryDetailsFromCode = (countryCode) => {
     const country = countries[countryCode];
+    console.log('country :',country)
     return {
       name: country.name,
-      currency: country.currency
+      currency: country.currencies[0]
     };
   };
 

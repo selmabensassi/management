@@ -40,6 +40,12 @@ import Task from './pages/Taskboard/Task';
 import Header from './pages/Taskboard/Header';
 import AddBoardModal from './pages/Taskboard/Modals';
 import AddTaskModal  from './pages/Taskboard/addtask';
+import ChatInput from './pages/chat/ChatInput';
+import ChatHeader from './pages/chat/header';
+import ChatContent from './pages/chat/content';
+import ChatMessages from './pages/chat/ChatMessages';
+import ChatLayout from './pages/chat/ChatLayout';
+import ChatSidebar from './pages/chat/sidebarMSG';
 const router = createBrowserRouter([
 	{
 		path: '/',
@@ -128,6 +134,20 @@ const router = createBrowserRouter([
        { path: 'taskboard/board', element: <Board/> },
        { path: 'taskboard/task', element: <Task/> },
        { path: 'taskboard/header', element: <Header/> },
+
+    ],
+},
+{
+    path: 'chat',
+    element: <MainLayout />,
+    children: [
+		{ path: 'ChatApp', element: <ChatLayout /> },
+        { path: 'ChatApp/input', element: <ChatInput /> },
+       { path: 'ChatApp/header', element: <ChatHeader/> },
+	 	{ path: 'ChatApp/list', element: <ChatContent/> },
+       { path: 'ChatApp/window', element: <ChatMessages/> },
+	    { path: 'ChatApp/side', element: <ChatSidebar/> },
+
 
     ],
 },
