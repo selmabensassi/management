@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import axiosInstance from '../../config/axiosConfig';
+
 
 const AddTaskModal = ({ show, handleClose, handleAddTask }) => {
   const [taskData, setTaskData] = useState({
@@ -28,19 +30,34 @@ const AddTaskModal = ({ show, handleClose, handleAddTask }) => {
     setTaskData(prevData => ({ ...prevData, taskImage: e.target.files[0] }));
   };
 
-  const handleSubmit = () => {
-    handleAddTask(taskData);
-    setTaskData({
-      projectName: '',
-      taskTitle: '',
-      taskDescription: '',
-      taskImage: null,
-      teamMembers: '',
-      dueDate: new Date(),
-      tags: '',
-      taskProgress: ''
-    });
-    handleClose();
+  const handleSubmit = async () => {
+    try {
+      const formData = new FormData();
+      for (const key in taskData) {
+        formData.append(key, taskData[key]);
+      }
+
+      const response = await axiosInstance.post('/task/', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      handleAddTask(response.data);
+      setTaskData({
+        projectName: '',
+        taskTitle: '',
+        taskDescription: '',
+        taskImage: null,
+        teamMembers: '',
+        dueDate: new Date(),
+        tags: '',
+        taskProgress: ''
+      });
+      handleClose();
+    } catch (error) {
+      console.error('Error creating task:', error);
+    }
   };
 
   return (

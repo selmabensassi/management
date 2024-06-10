@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
+import axiosInstance from '../../config/axiosConfig';
 
 const AddBoardModal = ({ show, handleClose, handleAddBoard }) => {
   const [boardName, setBoardName] = useState('');
@@ -8,9 +9,15 @@ const AddBoardModal = ({ show, handleClose, handleAddBoard }) => {
     setBoardName(e.target.value);
   };
 
-  const handleSubmit = () => {
-    handleAddBoard(boardName);
-    setBoardName('');
+  const handleSubmit = async () => {
+    try {
+      const response = await axiosInstance.post('/board', { boardName });
+      handleAddBoard(response.data);
+      setBoardName('');
+      handleClose();
+    } catch (error) {
+      console.error('Error creating board:', error);
+    }
   };
 
   return (

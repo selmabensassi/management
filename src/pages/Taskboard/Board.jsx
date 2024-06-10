@@ -10,7 +10,6 @@ const Board = ({ title, tasks }) => {
 
   const handleAddTask = (taskDetails) => {
     console.log('Task Added:', taskDetails);
-    // Add your logic to handle the new task addition here
   };
 
   return (
