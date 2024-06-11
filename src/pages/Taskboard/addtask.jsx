@@ -1,43 +1,49 @@
 import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
 import axiosInstance from '../../config/axiosConfig';
 
-
-const AddTaskModal = ({ show, handleClose, handleAddTask }) => {
+const AddNewTaskModal = ({ show, handleClose, handleAddTask, boardId }) => {
   const [taskData, setTaskData] = useState({
     projectName: '',
     taskTitle: '',
     taskDescription: '',
     taskImage: null,
     teamMembers: '',
-    dueDate: new Date(),
+    dueDate: new Date().toISOString().split('T')[0],
     tags: '',
     taskProgress: ''
   });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setTaskData(prevData => ({ ...prevData, [name]: value }));
-  };
-
-  const handleDateChange = (date) => {
-    setTaskData(prevData => ({ ...prevData, dueDate: date }));
+    setTaskData({ ...taskData, [name]: value });
   };
 
   const handleFileChange = (e) => {
-    setTaskData(prevData => ({ ...prevData, taskImage: e.target.files[0] }));
+    setTaskData({ ...taskData, taskImage: e.target.files[0] });
   };
 
   const handleSubmit = async () => {
     try {
       const formData = new FormData();
-      for (const key in taskData) {
-        formData.append(key, taskData[key]);
+      formData.append('projectName', taskData.projectName);
+      formData.append('taskTitle', taskData.taskTitle);
+      formData.append('taskDescription', taskData.taskDescription);
+      if (taskData.taskImage) {
+        formData.append('taskImage', taskData.taskImage);
+      }
+      formData.append('teamMembers', taskData.teamMembers);
+      formData.append('dueDate', taskData.dueDate);
+      formData.append('tags', taskData.tags);
+      formData.append('taskProgress', taskData.taskProgress);
+      formData.append('board', boardId);
+
+      // Logging FormData to check the data being sent
+      for (let pair of formData.entries()) {
+        console.log(pair[0] + ': ' + pair[1]);
       }
 
-      const response = await axiosInstance.post('/task/', formData, {
+      const response = await axiosInstance.post('/task', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -50,13 +56,24 @@ const AddTaskModal = ({ show, handleClose, handleAddTask }) => {
         taskDescription: '',
         taskImage: null,
         teamMembers: '',
-        dueDate: new Date(),
+        dueDate: new Date().toISOString().split('T')[0],
         tags: '',
         taskProgress: ''
       });
       handleClose();
     } catch (error) {
-      console.error('Error creating task:', error);
+      if (error.response) {
+        // Server responded with a status other than 200 range
+        console.error('Error response data:', error.response.data);
+        console.error('Error response status:', error.response.status);
+        console.error('Error response headers:', error.response.headers);
+      } else if (error.request) {
+        // Request was made but no response received
+        console.error('Error request:', error.request);
+      } else {
+        // Something else happened while setting up the request
+        console.error('Error message:', error.message);
+      }
     }
   };
 
@@ -67,7 +84,7 @@ const AddTaskModal = ({ show, handleClose, handleAddTask }) => {
       </Modal.Header>
       <Modal.Body>
         <Form>
-          <Form.Group controlId="formProjectName" className="mb-3">
+          <Form.Group controlId="formProjectName">
             <Form.Label>Project Name</Form.Label>
             <Form.Control
               type="text"
@@ -77,53 +94,54 @@ const AddTaskModal = ({ show, handleClose, handleAddTask }) => {
               onChange={handleInputChange}
             />
           </Form.Group>
-          <Form.Group controlId="formTaskTitle" className="mb-3">
+          <Form.Group controlId="formTaskTitle">
             <Form.Label>Task Title</Form.Label>
             <Form.Control
               type="text"
-              placeholder="Task title"
+              placeholder="Enter task title"
               name="taskTitle"
               value={taskData.taskTitle}
               onChange={handleInputChange}
             />
           </Form.Group>
-          <Form.Group controlId="formTaskDescription" className="mb-3">
+          <Form.Group controlId="formTaskDescription">
             <Form.Label>Task Description</Form.Label>
             <Form.Control
               as="textarea"
-              rows={3}
-              placeholder="Task description"
+              placeholder="Enter task description"
               name="taskDescription"
               value={taskData.taskDescription}
               onChange={handleInputChange}
             />
           </Form.Group>
-          <Form.Group controlId="formTaskImage" className="mb-3">
-            <Form.Label>Task Images</Form.Label>
+          <Form.Group controlId="formTaskImage">
+            <Form.Label>Task Image</Form.Label>
             <Form.Control
               type="file"
+              name="taskImage"
               onChange={handleFileChange}
             />
           </Form.Group>
-          <Form.Group controlId="formTeamMembers" className="mb-3">
-            <Form.Label>Add Team Members (Emails)</Form.Label>
+          <Form.Group controlId="formTeamMembers">
+            <Form.Label>Team Members</Form.Label>
             <Form.Control
               type="text"
-              placeholder="Enter email addresses, separated by commas"
+              placeholder="Enter team members"
               name="teamMembers"
               value={taskData.teamMembers}
               onChange={handleInputChange}
             />
           </Form.Group>
-          <Form.Group controlId="formDueDate" className="mb-3">
+          <Form.Group controlId="formDueDate">
             <Form.Label>Due Date</Form.Label>
-            <DatePicker
-              selected={taskData.dueDate}
-              onChange={handleDateChange}
-              className="form-control"
+            <Form.Control
+              type="date"
+              name="dueDate"
+              value={taskData.dueDate}
+              onChange={handleInputChange}
             />
           </Form.Group>
-          <Form.Group controlId="formTags" className="mb-3">
+          <Form.Group controlId="formTags">
             <Form.Label>Tags</Form.Label>
             <Form.Control
               type="text"
@@ -133,11 +151,11 @@ const AddTaskModal = ({ show, handleClose, handleAddTask }) => {
               onChange={handleInputChange}
             />
           </Form.Group>
-          <Form.Group controlId="formTaskProgress" className="mb-3">
+          <Form.Group controlId="formTaskProgress">
             <Form.Label>Task Progress</Form.Label>
             <Form.Control
               type="text"
-              placeholder="Enter progress"
+              placeholder="Enter task progress"
               name="taskProgress"
               value={taskData.taskProgress}
               onChange={handleInputChange}
@@ -157,4 +175,4 @@ const AddTaskModal = ({ show, handleClose, handleAddTask }) => {
   );
 };
 
-export default AddTaskModal;
+export default AddNewTaskModal;

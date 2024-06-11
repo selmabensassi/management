@@ -1,11 +1,10 @@
-import React, { useState ,useEffect}  from 'react';
-import Board from './Board';
+import React, { useState, useEffect } from 'react';
 import Header from './Header';
+import Board from './Board';
 import Modals from './Modals';
 import axiosInstance from '../../config/axiosConfig';
 
 const Taskboard = () => {
-
   const [boards, setBoards] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -23,7 +22,7 @@ const Taskboard = () => {
     };
 
     fetchBoards();
-  }, [boards]);
+  }, []);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
@@ -33,11 +32,11 @@ const Taskboard = () => {
       <div className="page-content">
         <div className="container-fluid">
           <Header />
-           <div className="tasks-board mb-3" id="kanbanboard">
-      {boards.map(board => (
-        <Board key={board._id} title={board.boardName} tasks={board.tasks} />
-      ))}
-    </div>
+          <div className="tasks-board mb-3" id="kanbanboard">
+            {boards.map(board => (
+              <Board key={board._id} title={board.boardName} boardId={board._id} />
+            ))}
+          </div>
           <Modals />
         </div>
       </div>

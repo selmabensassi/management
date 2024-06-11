@@ -1,19 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Task from './Task';
 import AddNewTaskModal from './addtask';
+import axiosInstance from '../../config/axiosConfig';
 
-const Board = ({ title, tasks }) => {
+const Board = ({ title, boardId }) => {
+  const [tasks, setTasks] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const handleShowModal = () => setShowModal(true);
   const handleCloseModal = () => setShowModal(false);
 
-  const handleAddTask = (taskDetails) => {
-    console.log('Task Added:', taskDetails);
+  const fetchTasks = async () => {
+    try {
+      const response = await axiosInstance.get(`/board/${boardId}/tasks`);
+      setTasks(response.data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
+  useEffect(() => {
+    fetchTasks();
+  }, [boardId]);
+
+  const handleAddTask = (taskDetails) => {
+    setTasks([...tasks, taskDetails]);
+  };
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+
   return (
-    <div className="tasks-list">
+    <div className="tasks-list" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       <div className="d-flex mb-3">
         <div className="flex-grow-1">
           <h6 className="fs-14 text-uppercase fw-semibold mb-0">{title} <small className="badge bg-success align-bottom ms-1 totaltask-badge">{tasks.length}</small></h6>
@@ -30,17 +52,17 @@ const Board = ({ title, tasks }) => {
           </div>
         </div>
       </div>
-      <div data-simplebar className="tasks-wrapper px-3 mx-n3">
+      <div data-simplebar className="tasks-wrapper px-3 mx-n3" style={{ flexGrow: 1, overflowY: 'auto' }}>
         <div id={`${title.toLowerCase()}-task`} className="tasks">
           {tasks.map(task => (
-            <Task key={task.id} task={task} />
+            <Task key={task._id} task={task} />
           ))}
         </div>
       </div>
       <div className="my-3">
         <button className="btn btn-primary w-100" onClick={handleShowModal}>Add More</button>
       </div>
-      <AddNewTaskModal show={showModal} handleClose={handleCloseModal} handleAddTask={handleAddTask} />
+      <AddNewTaskModal show={showModal} handleClose={handleCloseModal} handleAddTask={handleAddTask} boardId={boardId} />
     </div>
   );
 };
