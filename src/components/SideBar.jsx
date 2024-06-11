@@ -1,12 +1,31 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import '../assets/css/bootstrap.min.css';  
-import '../assets/css/icons.min.css';      
-import '../assets/css/app.min.css';        
+import { RiArrowDownSLine, RiArrowRightSLine } from 'react-icons/ri';
+import '../assets/css/bootstrap.min.css';
+import '../assets/css/icons.min.css';
+import '../assets/css/app.min.css';
 
 export default function SideBar() {
+  const [isBillingOpen, setIsBillingOpen] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+
+  useEffect(() => {
+    // Close the billing dropdown when the sidebar collapses
+    if (isSidebarCollapsed) {
+      setIsBillingOpen(false);
+    }
+  }, [isSidebarCollapsed]);
+
+  const toggleBillingMenu = () => {
+    setIsBillingOpen(!isBillingOpen);
+  };
+
+  const toggleSidebar = () => {
+    setIsSidebarCollapsed(!isSidebarCollapsed);
+  };
+
   return (
-    <div className="app-menu navbar-menu">
+    <div className={`app-menu navbar-menu ${isSidebarCollapsed ? 'collapsed' : ''}`}>
       <div className="navbar-brand-box">
         {/* Logo section */}
         <Link to="/" className="logo logo-dark">
@@ -49,16 +68,29 @@ export default function SideBar() {
           </Link>
         </li>
         <li className="nav-item">
-          <a href="#sidebarTickets" className="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarTickets">
-            <i className="ri-pie-chart-line"></i> <span>billing & Invoice</span>
+          <a
+            href="#sidebarBilling"
+            className="nav-link d-flex align-items-center"
+            onClick={toggleBillingMenu}
+            role="button"
+            aria-expanded={isBillingOpen}
+            aria-controls="sidebarBilling"
+          >
+            <i className="ri-pie-chart-line"></i>
+            <span className="flex-grow-1">Billing & Invoice</span>
+            <span className="arrow-icon">{isBillingOpen ? <RiArrowDownSLine /> : <RiArrowRightSLine />}</span>
           </a>
-          <div className="collapse menu-dropdown" id="sidebarTickets">
-            <ul className="nav nav-sm flex-column">
+          <div
+            className={`collapse ${isBillingOpen ? 'show' : ''}`}
+            id="sidebarBilling"
+            style={{ display: isBillingOpen ? 'block' : 'none' }}
+          >
+            <ul className={`nav nav-sm flex-column ${isSidebarCollapsed ? 'hidden' : ''}`}>
               <li className="nav-item">
-                <Link to="/invoices/list" className="nav-link">List View</Link>
+                <Link to="/billing-dashboard/billing" className="nav-link">List View</Link>
               </li>
               <li className="nav-item">
-                <Link to="/invoices/details" className="nav-link">Invoice Details</Link>
+                <Link to="/billing-dashboard/billing/add" className="nav-link">Invoice Details</Link>
               </li>
             </ul>
           </div>

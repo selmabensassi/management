@@ -1,7 +1,7 @@
 
 
 import { Link } from "react-router-dom";
-import logo_dark  from "../../assets/images/logo_dark.png";
+import logo  from "../..//../public/images/logo.png";
 import logo_light  from "../../assets/images/logo_light.png";
 const Navbar = () => {
    
@@ -11,8 +11,8 @@ const Navbar = () => {
     <nav className="navbar navbar-expand-lg navbar-landing fixed-top" id="navbar">
             <div className="container">
                 <a className="navbar-brand" href="index.html">
-                    <img src={logo_dark} className="card-logo card-logo-dark" alt="logo dark" height="17"/>
-                    <img src={logo_light} className="card-logo card-logo-light" alt="logo light" height="17"/>
+                    <img src={logo} className="card-logo card-logo-dark" alt="logo dark" />
+                    <img src={logo} className="card-logo card-logo-light" alt="logo light" />
                 </a>
                 <button className="navbar-toggler py-0 fs-20 text-body" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <i className="mdi mdi-menu"></i>

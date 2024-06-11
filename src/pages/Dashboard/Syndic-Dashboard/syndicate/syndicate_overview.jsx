@@ -3,7 +3,6 @@ import ReactApexChart from 'react-apexcharts';
 import { countries } from 'country-data';
 import axios from 'axios';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import 'leaflet/dist/leaflet.css';
 import SyndicateList from '../syndicate/syndicate_list';
@@ -46,13 +45,14 @@ const UserCards = ({ categories }) => {
 
 const MapChart = ({ syndicateData }) => {
   const center = [33.8439408, 9.400138];
-const zoom = 2;
+  const zoom = 2;
   const [markers, setMarkers] = useState([]);
   const [countryCounts, setCountryCounts] = useState([]);
   const [totalAdmins, setTotalAdmins] = useState(0);
 
   const getCountryDetailsFromCode = (countryCode) => {
     const country = countries.all.find(c => c.countryCallingCodes.includes('+' + countryCode));
+    console.log("country details :",country);
     return {
       name: country.name,
     };
@@ -119,16 +119,16 @@ const zoom = 2;
         <button type="button" className="btn btn-soft-primary btn-sm">Export Report</button>
       </div>
       <div className="card-body" style={{ overflowY: 'auto', }}>
-<MapContainer 
+        <MapContainer 
           center={center} 
           zoom={zoom} 
           style={{ height: '400px', width: '100%' }}  
           scrollWheelZoom={false}  
           doubleClickZoom={false}  
-          dragAndDrop={false}  
           dragging={false}
           touchZoom={false}  
-        >          <TileLayer
+        >          
+          <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           />

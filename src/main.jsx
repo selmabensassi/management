@@ -26,9 +26,26 @@ import ContractManagement from './pages/contract/contractManagement';
 import Claim from './pages/Claims/claimDashboard';
 import ClaimList from './pages/Claims/claimList';
 import AddClaim from './pages/Claims/Add_claim';
-
-
-
+import InvoiceManagement from './pages/Billing/invoiceManagement';
+import InvoiceList from './pages/Billing/invoiceList';
+import CreateInvoice from  './pages/Billing/invoiceCreate';
+import MainContent from './pages/Claims/MainContent';
+import TicketDescription from './pages/Claims/TicketDescription';
+import TicketDetails from './pages/Claims/TicketDetails';
+import TicketHeader from './pages/Claims/TicketHeader';
+import Comments from './pages/Claims/Comments';
+import Taskboard from './pages/Taskboard/MainContent_Task';
+import Board from './pages/Taskboard/Board';
+import Task from './pages/Taskboard/Task';
+import Header from './pages/Taskboard/Header';
+import AddBoardModal from './pages/Taskboard/Modals';
+import AddTaskModal  from './pages/Taskboard/addtask';
+import ChatInput from './pages/chat/ChatInput';
+import ChatHeader from './pages/chat/header';
+import ChatContent from './pages/chat/content';
+import ChatMessages from './pages/chat/ChatMessages';
+import ChatLayout from './pages/chat/ChatLayout';
+import ChatSidebar from './pages/chat/sidebarMSG';
 const router = createBrowserRouter([
 	{
 		path: '/',
@@ -91,6 +108,47 @@ const router = createBrowserRouter([
         { path: 'claim', element: <Claim /> },
         { path: 'claim/add', element: <AddClaim /> },
         { path: 'claim/list', element: <ClaimList /> },
+		{ path: 'claim/:claim_id/main', element: <MainContent/> },
+		{ path: 'claim/description', element: <TicketDescription /> },
+      	{ path: 'claim/details', element: <TicketDetails /> },
+     	{ path: 'claim/header', element: <TicketHeader /> },
+      	{ path: 'claim/comments', element: <Comments /> },
+    ],
+},
+{
+    path: 'billing-dashboard',
+    element: <MainLayout />,
+    children: [
+        { path: 'billing', element: <InvoiceManagement /> },
+        { path: 'billing/add', element: <CreateInvoice/> },
+       { path: 'billing/list', element: <InvoiceList /> },
+    ],
+},
+{
+    path: 'taskboard',
+    element: <MainLayout />,
+    children: [
+        { path: 'taskboard', element: <Taskboard /> },
+       { path: 'taskboard/addboard', element: <AddBoardModal/> },
+	 	{ path: 'taskboard/addtask', element: <AddTaskModal/> },
+       { path: 'taskboard/board', element: <Board/> },
+       { path: 'taskboard/task', element: <Task/> },
+       { path: 'taskboard/header', element: <Header/> },
+
+    ],
+},
+{
+    path: 'chat',
+    element: <MainLayout />,
+    children: [
+		{ path: 'ChatApp', element: <ChatLayout /> },
+        { path: 'ChatApp/input', element: <ChatInput /> },
+       { path: 'ChatApp/header', element: <ChatHeader/> },
+	 	{ path: 'ChatApp/list', element: <ChatContent/> },
+       { path: 'ChatApp/window', element: <ChatMessages/> },
+	    { path: 'ChatApp/side', element: <ChatSidebar/> },
+
+
     ],
 },
 

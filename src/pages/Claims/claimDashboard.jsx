@@ -1,28 +1,13 @@
 import ClaimList from './claimList';
 import AddClaim from './Add_claim';
-import React, { useState, useEffect } from 'react';
+import React, {useRef, useState, useEffect } from 'react';
 import ReactApexChart from 'react-apexcharts';
-const userCardsData = [
-  { title: "Total Tickets", count: 547, change: "17.32%", icon: "ri-ticket-2-line", badgeClass: "bg-light text-success", arrowClass: "ri-arrow-up-line" },
-  { title: "Pending Tickets", count: 124, change: "0.96%", icon: "mdi mdi-timer-sand", badgeClass: "bg-light text-danger", arrowClass: "ri-arrow-down-line" },
-  { title: "Closed Tickets", count: 107, change: "3.87%", icon: "ri-shopping-bag-line", badgeClass: "bg-light text-danger", arrowClass: "ri-arrow-down-line" },
-  { title: "Deleted Tickets", count: "15.95%", change: "1.09%", icon: "ri-delete-bin-line", badgeClass: "bg-light text-success", arrowClass: "ri-arrow-up-line" },
-];
+import axiosInstance from '../../config/axiosConfig';
 
-
-
-const numberOfTicketsData = [
-  { status: 'Open', count: 60 },
-  { status: 'Inprogress', count: 40 },
-  { status: 'Closed', count: 30 },
-  { status: 'New', count: 20 },
-];
-
-
-const UserCards = () => {
+const UserCards = ({ stats }) => {
   return (
     <div className="row">
-      {userCardsData.map((card, index) => (
+      {stats.map((card, index) => (
         <div className="col-xxl-3 col-sm-6" key={index}>
           <div className="card card-animate">
             <div className="card-body">
@@ -30,7 +15,7 @@ const UserCards = () => {
                 <div>
                   <p className="fw-medium text-muted mb-0">{card.title}</p>
                   <h2 className="mt-4 ff-secondary fw-semibold">
-                    <span className="counter-value" data-target={card.count}>{card.count}</span>k
+                    <span className="counter-value" data-target={card.count}>{card.count}</span>
                   </h2>
                   <p className="mb-0 text-muted">
                     <span className={`badge ${card.badgeClass} mb-0`}>
@@ -99,8 +84,12 @@ const UnresolvedTicketsByPriority = () => {
   );
 };
 
-const NumberOfTickets = () => {
-  const series = [67, 84, 97, 61];
+const NumberOfTickets = ({ series, total }) => {
+  console.log('Series data:', series);
+  console.log('Total:', total);
+
+  const chartRef = useRef(null);
+
   const options = {
     chart: {
       type: 'radialBar',
@@ -117,15 +106,29 @@ const NumberOfTickets = () => {
           total: {
             show: true,
             label: 'Total',
-            formatter: function () {
-              return 249;
-            },
+            formatter: () => `${total}`,
           },
         },
       },
     },
     labels: ['Open', 'Inprogress', 'Closed', 'New'],
   };
+
+  useEffect(() => {
+    if (chartRef.current) {
+      chartRef.current.chart.updateOptions({
+        plotOptions: {
+          radialBar: {
+            dataLabels: {
+              total: {
+                formatter: () => `${total}`,
+              },
+            },
+          },
+        },
+      });
+    }
+  }, [total]);
 
   return (
     <div className="col-xl-6">
@@ -134,19 +137,55 @@ const NumberOfTickets = () => {
           <h4 className="card-title mb-0">Number of Tickets</h4>
         </div>
         <div className="card-body">
-          <ReactApexChart options={options} series={series} type="radialBar" height={350} />
+          <ReactApexChart ref={chartRef} options={options} series={series} type="radialBar" height={350} />
         </div>
       </div>
     </div>
   );
 };
 
+
 const Claim = () => {
   const [showAddModal, setShowAddModal] = useState(false);
+  const [stats, setStats] = useState([]);
+  const [ticketCounts, setTicketCounts] = useState([0, 0, 0, 0]);
+  const [totalTickets, setTotalTickets] = useState(0);
 
   const handleAddModal = () => {
     setShowAddModal(!showAddModal);
   };
+
+  useEffect(() => {
+    const fetchClaims = async () => {
+      try {
+        const building_id = '65e8c16b40b8b3418ee6a075';
+        const response = await axiosInstance.get(`/${building_id}/claims`);
+        console.log("claim data:", response);
+        const claims = response.data.claims;
+
+        const totalTickets = claims.length;
+        const openTickets = claims.filter(claim => claim.status === 'opened').length;
+        const closedTickets = claims.filter(claim => claim.status === 'closed').length;
+        const newTickets = claims.filter(claim => claim.status === 'new').length;
+        const inprogressTickets = claims.filter(claim => claim.status === 'inprogress').length;
+        const deletedTickets = 0; 
+
+        setStats([
+          { title: "Total Tickets", count: totalTickets, change: "17.32%", icon: "ri-ticket-2-line", badgeClass: "bg-light text-success", arrowClass: "ri-arrow-up-line" },
+          { title: "Pending Tickets", count: openTickets, change: "0.96%", icon: "mdi mdi-timer-sand", badgeClass: "bg-light text-danger", arrowClass: "ri-arrow-down-line" },
+          { title: "Closed Tickets", count: closedTickets, change: "3.87%", icon: "ri-shopping-bag-line", badgeClass: "bg-light text-danger", arrowClass: "ri-arrow-down-line" },
+          { title: "Deleted Tickets", count: deletedTickets, change: "1.09%", icon: "ri-delete-bin-line", badgeClass: "bg-light text-success", arrowClass: "ri-arrow-up-line" },
+        ]);
+
+        setTicketCounts([openTickets, inprogressTickets, closedTickets, newTickets]); 
+        setTotalTickets(totalTickets);
+      } catch (error) {
+        console.error('Error fetching claims:', error.response ? error.response.data : error.message);
+      }
+    };
+
+    fetchClaims();
+  }, []);
 
   return (
     <div className="main-content">
@@ -166,9 +205,9 @@ const Claim = () => {
             </div>
           </div>
           <div className="row">
-            <UserCards />
+            <UserCards stats={stats} />
             <UnresolvedTicketsByPriority />
-            <NumberOfTickets />
+            <NumberOfTickets series={ticketCounts} total={totalTickets} />
           </div>
           <ClaimList onAddClick={handleAddModal} />
           {showAddModal && <AddClaim handleClose={handleAddModal} />}
@@ -177,7 +216,4 @@ const Claim = () => {
     </div>
   );
 };
-
 export default Claim;
-
-

@@ -8,9 +8,12 @@ export default function AddSubscriptionModal({ show, handleClose }) {
     subscriptionType: '',
     description: '',
     price: '',
-    joiningDate: new Date(),
-    status: ''
+    creationDate: new Date(),
+    status: '',
+    features: []
   });
+
+  const [newFeature, setNewFeature] = useState('');
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -18,7 +21,26 @@ export default function AddSubscriptionModal({ show, handleClose }) {
   };
 
   const handleDateChange = (date) => {
-    setSubscription(prev => ({ ...prev, joiningDate: date }));
+    setSubscription(prev => ({ ...prev, creationDate: date }));
+  };
+
+  const handleFeatureChange = (index, event) => {
+    const { value } = event.target;
+    setSubscription(prev => {
+      const updatedFeatures = [...prev.features];
+      updatedFeatures[index].isActive = value === 'active';
+      return { ...prev, features: updatedFeatures };
+    });
+  };
+
+  const handleAddFeature = () => {
+    if (newFeature.trim()) {
+      setSubscription(prev => ({
+        ...prev,
+        features: [...prev.features, { name: newFeature, isActive: true }]
+      }));
+      setNewFeature('');
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -57,8 +79,8 @@ export default function AddSubscriptionModal({ show, handleClose }) {
                 <input type="number" className="form-control" name="price" value={subscription.price} onChange={handleInputChange} required />
               </div>
               <div className="mb-4">
-                <label className="form-label"style={{ paddingRight: '20px' }}>Joining Date</label>
-                <DatePicker selected={subscription.joiningDate} onChange={handleDateChange} className="form-control" dateFormat="MMMM d, yyyy" />
+                <label className="form-label" style={{ paddingRight: '20px' }}>Creation Date</label>
+                <DatePicker selected={subscription.creationDate} onChange={handleDateChange} className="form-control" dateFormat="MMMM d, yyyy" />
               </div>
               <div className="mb-4">
                 <label className="form-label">Status</label>
@@ -67,6 +89,26 @@ export default function AddSubscriptionModal({ show, handleClose }) {
                   <option value="Monthly">Monthly</option>
                   <option value="Annually">Annually</option>
                 </select>
+              </div>
+              <div className="mb-4">
+                <label className="form-label">Features</label>
+                {subscription.features.map((feature, index) => (
+                  <div key={index} className="mb-3 d-flex align-items-center">
+                    <span style={{ marginRight: '10px', flexShrink: 0 }}>{feature.name}</span>
+                    <div className="form-check form-check-inline" style={{ marginRight: '10px' }}>
+                      <input type="radio" className="form-check-input" id={`feature-${index}-active`} name={`feature-${index}`} value="active" checked={feature.isActive} onChange={(e) => handleFeatureChange(index, e)} />
+                      <label className="form-check-label" htmlFor={`feature-${index}-active`}>Active</label>
+                    </div>
+                    <div className="form-check form-check-inline">
+                      <input type="radio" className="form-check-input" id={`feature-${index}-inactive`} name={`feature-${index}`} value="inactive" checked={!feature.isActive} onChange={(e) => handleFeatureChange(index, e)} />
+                      <label className="form-check-label" htmlFor={`feature-${index}-inactive`}>Inactive</label>
+                    </div>
+                  </div>
+                ))}
+                <div className="input-group mb-3">
+                  <input type="text" className="form-control" placeholder="New Feature Name" value={newFeature} onChange={(e) => setNewFeature(e.target.value)} />
+                  <button type="button" className="btn btn-outline-secondary" onClick={handleAddFeature}>Add Feature</button>
+                </div>
               </div>
             </div>
             <div className="modal-footer">

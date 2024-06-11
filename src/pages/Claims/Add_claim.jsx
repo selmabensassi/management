@@ -18,7 +18,7 @@ const AddClaim = ({ handleClose }) => {
     formData.append('title', title);
     formData.append('message', message);
     for (let i = 0; i < images.length; i++) {
-      formData.append('images', images[i]); // Ensure 'files' matches the field name expected by Multer
+      formData.append('images', images[i]); 
     }
 
     const building_id = '65e8c16b40b8b3418ee6a075';
@@ -47,10 +47,6 @@ const AddClaim = ({ handleClose }) => {
             <div className="modal-body">
               <div className="row g-3">
                 <div className="col-lg-12">
-                  <div id="modal-id">
-                    <label htmlFor="orderId" className="form-label">ID</label>
-                    <input type="text" id="orderId" className="form-control" placeholder="ID" value="#VLZ462" readOnly />
-                  </div>
                 </div>
                 <div className="col-lg-12">
                   <div>
