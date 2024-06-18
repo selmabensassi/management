@@ -46,6 +46,9 @@ import ChatContent from './pages/chat/content';
 import ChatMessages from './pages/chat/ChatMessages';
 import ChatLayout from './pages/chat/ChatLayout';
 import ChatSidebar from './pages/chat/sidebarMSG';
+import Logout from './pages/logout';
+
+
 const router = createBrowserRouter([
 	{
 		path: '/',
@@ -139,7 +142,8 @@ const router = createBrowserRouter([
 },
 {
     path: 'chat',
-    element: <MainLayout />,
+	element: <MainLayout />,
+
     children: [
 		{ path: 'ChatApp', element: <ChatLayout /> },
         { path: 'ChatApp/input', element: <ChatInput /> },
@@ -147,6 +151,15 @@ const router = createBrowserRouter([
 	 	{ path: 'ChatApp/list', element: <ChatContent/> },
        { path: 'ChatApp/window', element: <ChatMessages/> },
 	    { path: 'ChatApp/side', element: <ChatSidebar/> },
+
+
+    ],
+},
+
+{
+    path: 'logout',
+    children: [
+		{ path: 'out', element: <Logout /> },
 
 
     ],

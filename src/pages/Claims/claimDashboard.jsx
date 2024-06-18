@@ -17,11 +17,7 @@ const UserCards = ({ stats }) => {
                   <h2 className="mt-4 ff-secondary fw-semibold">
                     <span className="counter-value" data-target={card.count}>{card.count}</span>
                   </h2>
-                  <p className="mb-0 text-muted">
-                    <span className={`badge ${card.badgeClass} mb-0`}>
-                      <i className={`${card.arrowClass} align-middle`}></i> {card.change}
-                    </span> vs. previous month
-                  </p>
+                 
                 </div>
                 <div>
                   <div className="avatar-sm flex-shrink-0">
@@ -39,50 +35,50 @@ const UserCards = ({ stats }) => {
   );
 };
 
-const UnresolvedTicketsByPriority = () => {
-  const series = [
-    { name: 'PRODUCT A', data: [44, 55, 41, 67, 22, 43, 21] },
-    { name: 'PRODUCT B', data: [13, 23, 20, 8, 13, 27, 22] },
-    { name: 'PRODUCT C', data: [11, 17, 15, 15, 21, 14, 13] },
-    { name: 'PRODUCT D', data: [21, 7, 25, 13, 22, 8, 13] },
-  ];
+// const UnresolvedTicketsByPriority = () => {
+//   const series = [
+//     { name: 'PRODUCT A', data: [44, 55, 41, 67, 22, 43, 21] },
+//     { name: 'PRODUCT B', data: [13, 23, 20, 8, 13, 27, 22] },
+//     { name: 'PRODUCT C', data: [11, 17, 15, 15, 21, 14, 13] },
+//     { name: 'PRODUCT D', data: [21, 7, 25, 13, 22, 8, 13] },
+//   ];
 
-  const options = {
-    chart: {
-      type: 'bar',
-      height: 350,
-      stacked: true,
-    },
-    plotOptions: {
-      bar: {
-        horizontal: false,
-      },
-    },
-    xaxis: {
-      type: 'datetime',
-      categories: ['01/01/2021', '02/01/2021', '03/01/2021', '04/01/2021', '05/01/2021', '06/01/2021', '07/01/2021'],
-    },
-    legend: {
-      position: 'top',
-    },
-    fill: {
-      opacity: 1,
-    },
-  };
+//   const options = {
+//     chart: {
+//       type: 'bar',
+//       height: 350,
+//       stacked: true,
+//     },
+//     plotOptions: {
+//       bar: {
+//         horizontal: false,
+//       },
+//     },
+//     xaxis: {
+//       type: 'datetime',
+//       categories: ['01/01/2021', '02/01/2021', '03/01/2021', '04/01/2021', '05/01/2021', '06/01/2021', '07/01/2021'],
+//     },
+//     legend: {
+//       position: 'top',
+//     },
+//     fill: {
+//       opacity: 1,
+//     },
+//   };
 
-  return (
-    <div className="col-xl-6">
-      <div className="card">
-        <div className="card-header">
-          <h4 className="card-title mb-0">Unresolved Tickets by Priority</h4>
-        </div>
-        <div className="card-body">
-          <ReactApexChart options={options} series={series} type="bar" height={350} />
-        </div>
-      </div>
-    </div>
-  );
-};
+//   return (
+//     <div className="col-xl-6">
+//       <div className="card">
+//         <div className="card-header">
+//           <h4 className="card-title mb-0">Unresolved Tickets by Priority</h4>
+//         </div>
+//         <div className="card-body">
+//           <ReactApexChart options={options} series={series} type="bar" height={350} />
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
 
 const NumberOfTickets = ({ series, total }) => {
   console.log('Series data:', series);
@@ -171,10 +167,10 @@ const Claim = () => {
         const deletedTickets = 0; 
 
         setStats([
-          { title: "Total Tickets", count: totalTickets, change: "17.32%", icon: "ri-ticket-2-line", badgeClass: "bg-light text-success", arrowClass: "ri-arrow-up-line" },
-          { title: "Pending Tickets", count: openTickets, change: "0.96%", icon: "mdi mdi-timer-sand", badgeClass: "bg-light text-danger", arrowClass: "ri-arrow-down-line" },
-          { title: "Closed Tickets", count: closedTickets, change: "3.87%", icon: "ri-shopping-bag-line", badgeClass: "bg-light text-danger", arrowClass: "ri-arrow-down-line" },
-          { title: "Deleted Tickets", count: deletedTickets, change: "1.09%", icon: "ri-delete-bin-line", badgeClass: "bg-light text-success", arrowClass: "ri-arrow-up-line" },
+          { title: "Total Tickets", count: totalTickets, icon: "ri-ticket-2-line", },
+          { title: "Pending Tickets", count: openTickets,  icon: "mdi mdi-timer-sand",  },
+          { title: "Closed Tickets", count: closedTickets,  icon: "ri-shopping-bag-line",  },
+          { title: "Deleted Tickets", count: deletedTickets, icon: "ri-delete-bin-line", },
         ]);
 
         setTicketCounts([openTickets, inprogressTickets, closedTickets, newTickets]); 
@@ -206,7 +202,7 @@ const Claim = () => {
           </div>
           <div className="row">
             <UserCards stats={stats} />
-            <UnresolvedTicketsByPriority />
+            {/* <UnresolvedTicketsByPriority /> */}
             <NumberOfTickets series={ticketCounts} total={totalTickets} />
           </div>
           <ClaimList onAddClick={handleAddModal} />

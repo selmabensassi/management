@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { UserContext } from './UserContext';
-import logo from '../../public/images/logo.png'; 
+import logo from '../../public/images/logo.png';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import 'font-awesome/css/font-awesome.min.css';
@@ -11,14 +11,20 @@ const Navbar = ({ searchPlaceholder }) => {
   const context = useContext(UserContext);
 
   if (!context) {
-    return <div>Loading...</div>; 
+    return <div>Loading...</div>;
   }
 
-  const { userData: user, notifications, messages } = context;
+  const { userData: user,} = context;
 
   if (!user) {
-    return <div>Loading...</div>; 
+    return <div>Loading...</div>;
   }
+
+ const logout= () => {
+        localStorage.clear();
+        window.location.href = '/logout/out';
+    }
+
 
   return (
     <header className="navbar" style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 20px', backgroundColor: '#fff' }}>
@@ -106,7 +112,7 @@ const Navbar = ({ searchPlaceholder }) => {
               <span className="d-flex align-items-center">
                 <img
                   className="rounded-circle header-profile-user"
-                  src={userDummyImg} 
+                  src={userDummyImg}
                   alt="Header Avatar"
                 />
                 <span className="text-start ms-xl-2">
@@ -121,44 +127,27 @@ const Navbar = ({ searchPlaceholder }) => {
             </button>
             <div className="dropdown-menu dropdown-menu-end">
               <h6 className="dropdown-header">Welcome {user.name}!</h6>
-              <a className="dropdown-item" href="pages-profile.html">
+              {/* <Link to="/profile" className="dropdown-item">
                 <i className="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i>
                 <span className="align-middle">Profile</span>
-              </a>
-              <div>
-              <Link to="/chat/ChatApp" className="mdi mdi-calendar-check-middle text-muted fs-16 align-middle me-1">
-              <i className="align-middle"></i> <span>Messages</span>
-             </Link>
-             </div>
-             <div>
-               <Link to="/taskboard/taskboard" className="mdi mdi-calendar-check-outline text-muted fs-16 align-middle me-1">
-              <i className="align-middle"></i> <span>Taskboard</span>
-             </Link>
-             </div>
-              <a className="dropdown-item" href="pages-faqs.html">
-                <i className="mdi mdi-lifebuoy text-muted fs-16 align-middle me-1"></i>
-                <span className="align-middle">Help</span>
-              </a>
+              </Link> */}
+              <Link to="/chat/ChatApp" className="dropdown-item">
+                <i className="mdi mdi-email text-muted fs-16 align-middle me-1"></i>
+                <span className="align-middle">Messages</span>
+              </Link>
+              <Link to="/taskboard/taskboard" className="dropdown-item">
+                <i className="mdi mdi-calendar-check-outline text-muted fs-16 align-middle me-1"></i>
+                <span className="align-middle">Taskboard</span>
+              </Link>
               <div className="dropdown-divider"></div>
-              <a className="dropdown-item" href="pages-profile.html">
-                <i className="mdi mdi-wallet text-muted fs-16 align-middle me-1"></i>
-                <span className="align-middle">
-                  Balance : <b>$5971.67</b>
-                </span>
-              </a>
-              <a className="dropdown-item" href="pages-profile-settings.html">
-                <span className="badge bg-soft-success text-success mt-1 float-end">New</span>
-                <i className="mdi mdi-cog-outline text-muted fs-16 align-middle me-1"></i>
-                <span className="align-middle">Settings</span>
-              </a>
-              <a className="dropdown-item" href="auth-lockscreen-basic.html">
+              {/* <Link to="/lockscreen" className="dropdown-item">
                 <i className="mdi mdi-lock text-muted fs-16 align-middle me-1"></i>
                 <span className="align-middle">Lock screen</span>
-              </a>
-              <a className="dropdown-item" href="auth-logout-basic.html">
+              </Link> */}
+              <button className="dropdown-item" onClick={logout}>
                 <i className="mdi mdi-logout text-muted fs-16 align-middle me-1"></i>
                 <span className="align-middle" data-key="t-logout">Logout</span>
-              </a>
+              </button>
             </div>
           </div>
         </div>
