@@ -127,10 +127,10 @@ const Navbar = ({ searchPlaceholder }) => {
             </button>
             <div className="dropdown-menu dropdown-menu-end">
               <h6 className="dropdown-header">Welcome {user.name}!</h6>
-              <Link to="/profile" className="dropdown-item">
+              {/* <Link to="/profile" className="dropdown-item">
                 <i className="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i>
                 <span className="align-middle">Profile</span>
-              </Link>
+              </Link> */}
               <Link to="/chat/ChatApp" className="dropdown-item">
                 <i className="mdi mdi-email text-muted fs-16 align-middle me-1"></i>
                 <span className="align-middle">Messages</span>
@@ -140,10 +140,10 @@ const Navbar = ({ searchPlaceholder }) => {
                 <span className="align-middle">Taskboard</span>
               </Link>
               <div className="dropdown-divider"></div>
-              <Link to="/lockscreen" className="dropdown-item">
+              {/* <Link to="/lockscreen" className="dropdown-item">
                 <i className="mdi mdi-lock text-muted fs-16 align-middle me-1"></i>
                 <span className="align-middle">Lock screen</span>
-              </Link>
+              </Link> */}
               <button className="dropdown-item" onClick={logout}>
                 <i className="mdi mdi-logout text-muted fs-16 align-middle me-1"></i>
                 <span className="align-middle" data-key="t-logout">Logout</span>

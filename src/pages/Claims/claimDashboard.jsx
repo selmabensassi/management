@@ -17,11 +17,7 @@ const UserCards = ({ stats }) => {
                   <h2 className="mt-4 ff-secondary fw-semibold">
                     <span className="counter-value" data-target={card.count}>{card.count}</span>
                   </h2>
-                  <p className="mb-0 text-muted">
-                    <span className={`badge ${card.badgeClass} mb-0`}>
-                      <i className={`${card.arrowClass} align-middle`}></i> {card.change}
-                    </span> vs. previous month
-                  </p>
+                 
                 </div>
                 <div>
                   <div className="avatar-sm flex-shrink-0">
@@ -171,10 +167,10 @@ const Claim = () => {
         const deletedTickets = 0; 
 
         setStats([
-          { title: "Total Tickets", count: totalTickets, change: "17.32%", icon: "ri-ticket-2-line", badgeClass: "bg-light text-success", arrowClass: "ri-arrow-up-line" },
-          { title: "Pending Tickets", count: openTickets, change: "0.96%", icon: "mdi mdi-timer-sand", badgeClass: "bg-light text-danger", arrowClass: "ri-arrow-down-line" },
-          { title: "Closed Tickets", count: closedTickets, change: "3.87%", icon: "ri-shopping-bag-line", badgeClass: "bg-light text-danger", arrowClass: "ri-arrow-down-line" },
-          { title: "Deleted Tickets", count: deletedTickets, change: "1.09%", icon: "ri-delete-bin-line", badgeClass: "bg-light text-success", arrowClass: "ri-arrow-up-line" },
+          { title: "Total Tickets", count: totalTickets, icon: "ri-ticket-2-line", },
+          { title: "Pending Tickets", count: openTickets,  icon: "mdi mdi-timer-sand",  },
+          { title: "Closed Tickets", count: closedTickets,  icon: "ri-shopping-bag-line",  },
+          { title: "Deleted Tickets", count: deletedTickets, icon: "ri-delete-bin-line", },
         ]);
 
         setTicketCounts([openTickets, inprogressTickets, closedTickets, newTickets]); 

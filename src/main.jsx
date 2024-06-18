@@ -142,6 +142,8 @@ const router = createBrowserRouter([
 },
 {
     path: 'chat',
+	element: <MainLayout />,
+
     children: [
 		{ path: 'ChatApp', element: <ChatLayout /> },
         { path: 'ChatApp/input', element: <ChatInput /> },
