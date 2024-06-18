@@ -22,7 +22,6 @@ const ClaimList = () => {
         console.log("Initial claim data:", response.data);
         const claimsData = response.data.claims;
 
-        // Fetch details for each claim by its ID
         const detailedClaims = await Promise.all(claimsData.map(async (claim) => {
           const detailedResponse = await axiosInstance.get(`/${building_id}/claims/${claim._id}`);
           console.log("Detailed claim data:", detailedResponse.data);
@@ -57,9 +56,9 @@ const ClaimList = () => {
               <h5 className="card-title mb-0 flex-grow-1">Unsolved Tickets</h5>
               <div className="flex-shrink-0">
                 <div className="d-flex flex-wrap gap-2">
-                  <button className="btn btn-danger add-btn" onClick={handleAddModal}>
+                  {/* <button className="btn btn-danger add-btn" onClick={handleAddModal}>
                     <RiAddLine className="align-bottom me-1" /> Create Tickets
-                  </button>
+                  </button> */}
                   <button className="btn btn-secondary">
                     <RiDeleteBin2Line />
                   </button>

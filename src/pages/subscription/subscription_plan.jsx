@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import ReactApexChart from 'react-apexcharts';
 import axiosInstance from '../../config/axiosConfig';
 import SubscriberList from '../subscription/subscriber_list';
+
 const SubscriptionCards = ({ SubscriptionData }) => {
   return (
     <div className="row">
       {SubscriptionData.map((item, index) => (
         <div key={index} className="col-xl-3 col-lg-3 col-md-6 col-sm-12">
           <div className="card h-100">
-            <div className="card-body ">
+            <div className="card-body">
               <div className="d-flex align-items-center justify-content-between">
                 <div>
                   <h6 className="text-muted mb-2">{item.title}</h6>
@@ -27,24 +27,58 @@ const SubscriptionCards = ({ SubscriptionData }) => {
   );
 };
 
+export default function SubscriptionManagement() {
+  const [syndicateData, setSyndicateData] = useState([]);
 
-export default function SubscriptionManagement  ()  {
-    const SubscriptionData = [
-  {
-    title: "Subscribed Customers", count: 7, changeType: " ", icon: "ri-group-line"
-  },
-  {
-    title: "Active Subscriptions",count: 0,changeType: " ",icon: "mdi-check-circle-outline"
-  },
-  {
-    title: "Expiring Subscriptions", count:0, changeType: " ",  icon: "ri-history-line",
-  },
-  { title: "Failed Subscriptions", count: 0, changeType: " ",  icon: "bx bx-block",
-  }
-];
+  useEffect(() => {
+    const fetchSyndicates = async () => {
+      try {
+        const response = await axiosInstance.get('/Syndic/all');
+        setSyndicateData(response.data.data.syndics);
+      } catch (error) {
+        console.error('Failed to fetch syndicate data:', error);
+      }
+    };
 
-    return (
-        <div className="main-content">
+    fetchSyndicates();
+  }, []);
+
+  const currentDate = new Date();
+
+   const validSyndicates = syndicateData.filter(syndic => syndic.subscription_end_at);
+  const subscribedCustomers = validSyndicates.length;
+   const activeSubscriptions = syndicateData.filter(syndicate => new Date(syndicate.subscription_end_at) > currentDate).length;
+  const expiringSubscriptions = syndicateData.filter(syndicate => new Date(syndicate.subscription_end_at) <= currentDate).length;
+  const failedSubscriptions = syndicateData.filter(syndic => syndic.status === 'failed').length; 
+  const SubscriptionData = [
+    {
+      title: "Subscribed Customers",
+      count: subscribedCustomers,
+      changeType: " ",
+      icon: "ri-group-line"
+    },
+    {
+      title: "Active Subscriptions",
+      count: activeSubscriptions,
+      changeType: " ",
+      icon: "mdi-check-circle-outline"
+    },
+    {
+      title: "Expiring Subscriptions",
+      count: expiringSubscriptions,
+      changeType: " ",
+      icon: "ri-history-line"
+    },
+    {
+      title: "Failed Subscriptions",
+      count: failedSubscriptions,
+      changeType: " ",
+      icon: "bx bx-block"
+    }
+  ];
+
+  return (
+    <div className="main-content">
       <div className="container-fluid">
         <div className="row mb-4">
           <SubscriptionCards SubscriptionData={SubscriptionData} />
@@ -52,6 +86,5 @@ export default function SubscriptionManagement  ()  {
         <SubscriberList />
       </div>
     </div>
-    );
+  );
 }
-

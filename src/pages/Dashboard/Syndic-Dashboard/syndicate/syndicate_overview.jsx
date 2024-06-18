@@ -3,7 +3,6 @@ import ReactApexChart from 'react-apexcharts';
 import { countries } from 'country-data';
 import axios from 'axios';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import 'leaflet/dist/leaflet.css';
 import SyndicateList from '../syndicate/syndicate_list';
 import axiosInstance from '../../../../config/axiosConfig';
@@ -52,7 +51,7 @@ const MapChart = ({ syndicateData }) => {
 
   const getCountryDetailsFromCode = (countryCode) => {
     const country = countries.all.find(c => c.countryCallingCodes.includes('+' + countryCode));
-    console.log("country details :",country);
+    console.log("country details :", country);
     return {
       name: country.name,
     };
@@ -151,7 +150,6 @@ const MapChart = ({ syndicateData }) => {
   );
 };
 
-
 const PieChart = ({ syndicateData }) => {
   const [coOwnerCount, setCoOwnerCount] = useState(0);
   const [proCount, setProCount] = useState(0);
@@ -223,41 +221,53 @@ const UserSubscriptions = () => {
   });
 
   useEffect(() => {
-    const fetchSubscriptionData = async () => {
+    const fetchSyndicData = async () => {
       try {
-        const response = await axiosInstance.get('/subscriptions/all'); 
-        const data = transformData(response.data);
+        const response = await axiosInstance.get('/Syndic/all');
+        const data = transformData(response.data.data.syndics);
         setChartData(data);
       } catch (error) {
-        console.error('Failed to fetch subscription data:', error);
+        console.error('Failed to fetch syndic data:', error);
       }
     };
 
-    fetchSubscriptionData();
-
+    fetchSyndicData();
   }, []);
-   
 
-  const transformData = (subscriptions) => {
+  const transformData = (syndics) => {
     const countsByMonth = {};
-    subscriptions.forEach(sub => {
-      const month = new Date(sub.joiningDate).toLocaleString('default', { month: 'short', year: 'numeric' });
-      countsByMonth[month] = (countsByMonth[month] || 0) + 1;
+    syndics.forEach(syndic => {
+      if (syndic.subscription_end_at) {
+        const date = new Date(syndic.subscription_end_at);
+        const month = date.toLocaleString('default', { month: 'short', year: 'numeric' });
+        countsByMonth[month] = (countsByMonth[month] || 0) + 1;
+      }
     });
+    
 
-    const categories = Object.keys(countsByMonth);
-    const seriesData = Object.values(countsByMonth);
+    const allMonths = getAllMonths();
+    const seriesData = allMonths.map(month => countsByMonth[month] || 0);
 
     return {
       series: [{ name: "Subscriptions", data: seriesData }],
-      categories
+      categories: allMonths
     };
+  };
+
+  const getAllMonths = () => {
+    const months = [];
+    const date = new Date();
+    for (let i = 0; i < 12; i++) {
+      months.push(date.toLocaleString('default', { month: 'short', year: 'numeric' }));
+      date.setMonth(date.getMonth() - 1);
+    }
+    return months.reverse();
   };
 
   return (
     <div className="card" style={{ height: '500px', width: '100%' }}>
       <div className="card-header">
-        <h4 className="card-title mb-0">User Subscriptions</h4>
+        <h4 className="card-title mb-0">Syndic Subscriptions</h4>
       </div>
       <div className="card-body">
         <ReactApexChart
@@ -268,6 +278,22 @@ const UserSubscriptions = () => {
             },
             xaxis: {
               categories: chartData.categories,
+            },
+            stroke: {
+              curve: 'smooth'
+            },
+            dataLabels: {
+              enabled: false
+            },
+            markers: {
+              size: 5,
+            },
+            tooltip: {
+              y: {
+                formatter: function (val) {
+                  return val;
+                }
+              }
             }
           }}
           series={chartData.series}
@@ -280,22 +306,22 @@ const UserSubscriptions = () => {
 };
 
 
-const UserActivity = () => {
-  return (
-    <div className="card card-height-100">
-      <div className="card-header border-bottom-dashed align-items-center d-flex">
-        <h4 className="card-title mb-0 flex-grow-1">User Activity</h4>
-        <div className="flex-shrink-0">
-          <button type="button" className="btn btn-soft-primary btn-sm">
-            View All Activity
-          </button>
-        </div>
-      </div>
-      <div className="card-body p-0">
-      </div>
-    </div>
-  );
-};
+// const UserActivity = () => {
+//   return (
+//     <div className="card card-height-100">
+//       <div className="card-header border-bottom-dashed align-items-center d-flex">
+//         <h4 className="card-title mb-0 flex-grow-1">User Activity</h4>
+//         <div className="flex-shrink-0">
+//           <button type="button" className="btn btn-soft-primary btn-sm">
+//             View All Activity
+//           </button>
+//         </div>
+//       </div>
+//       <div className="card-body p-0">
+//       </div>
+//     </div>
+//   );
+// };
 
 export default function SyndicateManagement() {
   const [syndicateData, setSyndicateData] = useState([]);
@@ -307,6 +333,7 @@ export default function SyndicateManagement() {
       setIsLoading(true);
       try {
         const response = await axiosInstance.get('/Syndic/all');
+        console.log("syndic data :",response)
         setSyndicateData(response.data.data.syndics);
       } catch (error) {
         setError(error.message);
@@ -317,27 +344,18 @@ export default function SyndicateManagement() {
 
     fetchSyndicates();
   }, []);
+
   const currentDate = new Date();
-  const currentMonth = currentDate.getMonth() + 1;
-  const currentYear = currentDate.getFullYear();
-
-  const newUsers = syndicateData.filter(syndicate => {
-    const joinDate = new Date(syndicate.createdAt);
-    const joinMonth = joinDate.getMonth() + 1;
-    const joinYear = joinDate.getFullYear();
-
-    return joinMonth === currentMonth && joinYear === currentYear;
-  }).length;
 
   const totalUsers = syndicateData.length;
-  const activeUsers = syndicateData.filter(syndicate => syndicate.status === 'active').length;
-  const inactiveUsers = syndicateData.filter(syndicate => syndicate.status === 'inactive').length;
+  const activeUsers = syndicateData.filter(syndicate => new Date(syndicate.subscription_end_at) > currentDate).length;
+  const inactiveUsers = syndicateData.filter(syndicate => new Date(syndicate.subscription_end_at) <= currentDate).length;
 
   const categories = [
     { name: "Total USERS", percentageChange: "", changeType: "", userCount: totalUsers, icon: "group-line" },
     { name: "Active USERS", percentageChange: "", changeType: "", userCount: activeUsers, icon: "user-follow-line" },
     { name: "Inactive USERS", percentageChange: "", changeType: "", userCount: inactiveUsers, icon: "user-unfollow-line" },
-    { name: "New USERS", percentageChange: "", changeType: "", userCount: newUsers, icon: "user-received-line" },
+    { name: "New USERS", percentageChange: "", changeType: "", userCount: syndicateData.filter(syndicate => new Date(syndicate.createdAt).getMonth() === currentDate.getMonth() && new Date(syndicate.createdAt).getFullYear() === currentDate.getFullYear()).length, icon: "user-received-line" },
   ];
 
   return (
@@ -366,25 +384,11 @@ export default function SyndicateManagement() {
           <div className="col-xl-8">
             <UserSubscriptions />
           </div>
-          <div className="col-xl-4">
+          {/* <div className="col-xl-4">
             <UserActivity />
-          </div>
+          </div> */}
         </div>
         <SyndicateList />
-        <footer className="footer mt-5">
-          <div className="container-fluid">
-            <div className="row">
-              <div className="col-sm-6">
-                {new Date().getFullYear()} © Velzon.
-              </div>
-              <div className="col-sm-6">
-                <div className="text-sm-end d-none d-sm-block">
-                  Design & Develop by Themesbrand
-                </div>
-              </div>
-            </div>
-          </div>
-        </footer>
       </div>
     </div>
   );

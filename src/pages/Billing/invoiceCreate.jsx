@@ -43,7 +43,9 @@ function CreateInvoice() {
   const handleSendInvoice = async () => {
     const email = prompt('Enter email address:');
     try {
+      console.log('invoice data :',invoiceData)
       const response = await axiosInstance.post('/invoices/send', { email, invoiceData });
+      
       console.log('Invoice sent successfully', response.data);
     } catch (error) {
       console.error('Error sending invoice', error);

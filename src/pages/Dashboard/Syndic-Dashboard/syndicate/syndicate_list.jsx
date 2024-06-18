@@ -49,11 +49,11 @@ export default function SyndicateList() {
           <div className="col-sm-auto">
             <div className="d-flex flex-wrap align-items-start gap-2">
               <button className="btn btn-success" onClick={openAddModal}>
-                <i className="ri-add-line align-bottom me-1"></i> Add Syndicates
+                <i className="ri-add-line align-bottom me-1"></i> Add Syndicate
               </button>
-              <button className="btn btn-info">
+              {/* <button className="btn btn-info">
                 <i className="ri-file-download-line align-bottom me-1"></i> Import
-              </button>
+              </button> */}
             </div>
           </div>
         </div>

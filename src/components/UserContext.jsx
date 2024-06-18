@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
 import axiosInstance from '../config/axiosConfig';
+import { Link } from 'react-router-dom';
 
 
 // Create the context
@@ -60,13 +61,21 @@ export const UserProvider = ({ children }) => {
       console.error('Error fetching user data:', error);
     }
   };
+  const logout = () => {
+    setUser(null);
+    setNotifications([]);
+    setMessages([]);
+     <Link to="/auth/login" >
+              </Link>
+  //  history.push('/auth/login');
+  };
 
   useEffect(() => {
     fetchUserData();
   }, []);
 
   return (
-    <UserContext.Provider value={{ userData, notifications, messages }}>
+    <UserContext.Provider value={{ userData, notifications, messages , logout }}>
       {children}
     </UserContext.Provider>
   );
