@@ -169,7 +169,6 @@ function ContractList({ contracts, onDelete }) {
               <th>Start Date</th>
               <th>Next Charge Date</th>
               <th>Status</th>
-              <th>Auto Renew</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -186,7 +185,7 @@ function ContractList({ contracts, onDelete }) {
                     {contract.status}
                   </span>
                 </td>
-                <td>
+                {/* <td>
                   <div className="form-check form-switch">
                     <input
                       className="form-check-input"
@@ -195,7 +194,7 @@ function ContractList({ contracts, onDelete }) {
                       onChange={() => handleAutoRenewToggle(contract._id, contract.autoRenew)}
                     />
                   </div>
-                </td>
+                </td> */}
                 <td>
                   <button className="btn btn-primary btn-sm" onClick={() => alert('Edit function not implemented')}>
                     Edit

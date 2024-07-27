@@ -117,7 +117,7 @@ const Navbar = ({ searchPlaceholder }) => {
                 />
                 <span className="text-start ms-xl-2">
                   <span className="d-none d-xl-inline-block ms-1 fw-medium user-name-text">
-                    {user.name}
+                    {user.lastName}
                   </span>
                   <span className="d-none d-xl-block ms-1 fs-12 text-muted user-name-sub-text">
                     {user.role}
@@ -138,6 +138,10 @@ const Navbar = ({ searchPlaceholder }) => {
               <Link to="/taskboard/taskboard" className="dropdown-item">
                 <i className="mdi mdi-calendar-check-outline text-muted fs-16 align-middle me-1"></i>
                 <span className="align-middle">Taskboard</span>
+              </Link>
+              <Link to="/profile" className="dropdown-item">
+                <i className="mdi mdi-account-outline text-muted fs-16 align-middle me-1"></i>
+                <span className="align-middle">Profile</span>
               </Link>
               <div className="dropdown-divider"></div>
               {/* <Link to="/lockscreen" className="dropdown-item">

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import axiosInstance from '../../config/axiosConfig';
 import InvoiceList from './invoiceList';
+import { RiAddCircleFill } from 'react-icons/ri';
 
 const InvoiceCards = ({ InvoiceData }) => {
   return (
@@ -29,11 +31,12 @@ const InvoiceCards = ({ InvoiceData }) => {
 
 export default function InvoiceManagement() {
   const [invoiceData, setInvoiceData] = useState([]);
+  const [sentInvoiceCount, setSentInvoiceCount] = useState(0);
 
   useEffect(() => {
     const fetchInvoices = async () => {
       try {
-        const response = await axiosInstance.get('/payments/all'); // Adjust the endpoint as needed
+        const response = await axiosInstance.get('/payments/all');
         setInvoiceData(response.data);
       } catch (error) {
         console.error('Failed to fetch payment data:', error);
@@ -43,7 +46,7 @@ export default function InvoiceManagement() {
     fetchInvoices();
   }, []);
 
-  const totalInvoices = invoiceData.length;
+  const totalInvoices = invoiceData.length + sentInvoiceCount;
   const paidInvoices = invoiceData.filter(invoice => invoice.status === 'paid').length;
   const unpaidInvoices = invoiceData.filter(invoice => invoice.status === 'pending').length;
   const cancelledInvoices = invoiceData.filter(invoice => invoice.status === 'cancelled').length;
@@ -81,7 +84,7 @@ export default function InvoiceManagement() {
         <div className="row mb-4">
           <InvoiceCards InvoiceData={InvoiceData} />
         </div>
-        <InvoiceList />
+        <InvoiceList setSentInvoiceCount={setSentInvoiceCount} /> 
       </div>
     </div>
   );

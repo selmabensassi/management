@@ -1,10 +1,15 @@
 import React, { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axiosInstance from '../../config/axiosConfig';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
-import { RiAddFill, RiPrinterLine, RiDownload2Line, RiSendPlaneFill } from 'react-icons/ri';
+import { RiPrinterLine, RiDownload2Line, RiSendPlaneFill } from 'react-icons/ri';
 
-function CreateInvoice() {
+function CreateInvoice({ setSentInvoiceCount }) {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { sentInvoiceCount } = location.state || { sentInvoiceCount: 0 };
+
   const [invoiceData, setInvoiceData] = useState({
     syndicateID: '',
     amount: '',
@@ -43,10 +48,14 @@ function CreateInvoice() {
   const handleSendInvoice = async () => {
     const email = prompt('Enter email address:');
     try {
-      console.log('invoice data :',invoiceData)
+      console.log('invoice data :', invoiceData);
       const response = await axiosInstance.post('/invoices/send', { email, invoiceData });
       
       console.log('Invoice sent successfully', response.data);
+
+      // Increment invoice count
+      setSentInvoiceCount((prevCount) => prevCount + 1);
+      navigate('/', { state: { sentInvoiceCount: sentInvoiceCount + 1 } });
     } catch (error) {
       console.error('Error sending invoice', error);
     }

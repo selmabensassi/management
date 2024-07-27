@@ -126,43 +126,43 @@ const MeetingsHistory = ({ meetings }) => {
 };
 
 
-const AllMeetingsBySubscription = ({ PieData }) => {
-  const chartOptions = {
-    chart: {
-      type: 'pie',
-    },
-    labels: PieData.map(item => item.label),
-    responsive: [{
-      breakpoint: 480,
-      options: {
-        chart: {
-          width: 200
-        },
-        legend: {
-          position: 'bottom'
-        }
-      }
-    }],
-    legend: {
-      position: 'right',
-      offsetY: 0,
-      height: 230,
-    }
-  };
+// const AllMeetingsBySubscription = ({ PieData }) => {
+//   const chartOptions = {
+//     chart: {
+//       type: 'pie',
+//     },
+//     labels: PieData.map(item => item.label),
+//     responsive: [{
+//       breakpoint: 480,
+//       options: {
+//         chart: {
+//           width: 200
+//         },
+//         legend: {
+//           position: 'bottom'
+//         }
+//       }
+//     }],
+//     legend: {
+//       position: 'right',
+//       offsetY: 0,
+//       height: 230,
+//     }
+//   };
 
-  const series = PieData.map(item => item.value);
+//   const series = PieData.map(item => item.value);
 
-  return (
-    <div className="card">
-      <div className="card-header">
-        <h4 className="card-title mb-0">All meetings (by subscription Plan)</h4>
-      </div>
-      <div className="card-body">
-        <ReactApexChart options={chartOptions} series={series} type="pie" height={350} />
-      </div>
-    </div>
-  );
-};
+//   return (
+//     <div className="card">
+//       <div className="card-header">
+//         <h4 className="card-title mb-0">All meetings (by subscription Plan)</h4>
+//       </div>
+//       <div className="card-body">
+//         <ReactApexChart options={chartOptions} series={series} type="pie" height={350} />
+//       </div>
+//     </div>
+//   );
+// };
 
 const MeetingsVolumeTrend = ({ chartSeries, chartOptions }) => {
   return (
@@ -177,40 +177,40 @@ const MeetingsVolumeTrend = ({ chartSeries, chartOptions }) => {
   );
 };
 
-const SyndicateActivity = ({ activityData }) => {
-  return (
-    <div className="card card-height-100">
-      <div className="card-header border-bottom-dashed align-items-center d-flex">
-        <h4 className="card-title mb-0 flex-grow-1">Syndicate Activity</h4>
-        <div className="flex-shrink-0">
-          <button type="button" className="btn btn-soft-primary btn-sm">
-            View All Activity
-          </button>
-        </div>
-      </div>
-      <div className="card-body p-0">
-        <div data-simplebar style={{ maxHeight: '364px' }} className="p-3">
-          <div className="activity-timeline activity-main">
-            {activityData.map((item, index) => (
-              <div key={index} className="activity-item d-flex">
-                <div className="flex-shrink-0 avatar-xs activity-avatar">
-                  <div className="avatar-title rounded-circle bg-secondary">
-                    <i className={item.icon}></i>
-                  </div>
-                </div>
-                <div className="flex-grow-1 ms-3">
-                  <h6 className="mb-1">{item.title}</h6>
-                  <p className="text-muted mb-1">{item.requests} requests</p>
-                  <small className="mb-0 text-muted">{item.time}</small>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
+// const SyndicateActivity = ({ activityData }) => {
+//   return (
+//     <div className="card card-height-100">
+//       <div className="card-header border-bottom-dashed align-items-center d-flex">
+//         <h4 className="card-title mb-0 flex-grow-1">Syndicate Activity</h4>
+//         <div className="flex-shrink-0">
+//           <button type="button" className="btn btn-soft-primary btn-sm">
+//             View All Activity
+//           </button>
+//         </div>
+//       </div>
+//       <div className="card-body p-0">
+//         <div data-simplebar style={{ maxHeight: '364px' }} className="p-3">
+//           <div className="activity-timeline activity-main">
+//             {activityData.map((item, index) => (
+//               <div key={index} className="activity-item d-flex">
+//                 <div className="flex-shrink-0 avatar-xs activity-avatar">
+//                   <div className="avatar-title rounded-circle bg-secondary">
+//                     <i className={item.icon}></i>
+//                   </div>
+//                 </div>
+//                 <div className="flex-grow-1 ms-3">
+//                   <h6 className="mb-1">{item.title}</h6>
+//                   <p className="text-muted mb-1">{item.requests} requests</p>
+//                   <small className="mb-0 text-muted">{item.time}</small>
+//                 </div>
+//               </div>
+//             ))}
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
 
 
  const MeetingManagement = () => {
@@ -282,33 +282,35 @@ const fetchSyndicateAdmin = async () => {
 
 
   const calculateMeetingCounts = () => {
-    const counts = {
-      upcoming: 0,
-      finished: 0,
-      canceled: 0
-    };
-console.log ("meet data :",meetData);
-    meetData.forEach(meeting => {
+  const currentMonth = new Date().getMonth() + 1;
+  const counts = {
+    upcoming: 0,
+    finished: 0,
+    canceled: 0
+  };
+
+  meetData.forEach(meeting => {
+    const meetingMonth = new Date(meeting.startDate).getMonth() + 1;
+    if (meetingMonth === currentMonth) {
       switch (meeting.status) {
         case 'upcoming':
           counts.upcoming++;
-          console.log("upcoming count :",counts.upcoming);
           break;
         case 'finished':
           counts.finished++;
-          console.log("finished count :",counts.finished);
           break;
         case 'canceled':
           counts.canceled++;
-          console.log("cancelled count :",counts.canceled);
           break;
         default:
           break;
       }
-    });
+    }
+  });
 
-    return counts;
-  };
+  return counts;
+};
+
 
   const data = [
     { name: "Scheduled Meeting", count: calculateMeetingCounts().upcoming, percentageChange: "", changeType: "", icon: "bx-calendar-event" },
@@ -390,17 +392,17 @@ const meetings = meetData.map(meeting => ({
           <div className="col-lg-9 pe-lg-3">
             <MeetingsHistory meetings={meetings} />
           </div>
-          <div className="col-lg-3">
+          {/* <div className="col-lg-3">
             <AllMeetingsBySubscription PieData={PieData} />
-          </div>
+          </div> */}
         </div>
         <div className="row gx-5">
           <div className="col-lg-9 pe-lg-3">
             <MeetingsVolumeTrend chartSeries={chartSeries} chartOptions={chartOptions} />
           </div>
-          <div className="col-lg-3">
+          {/* <div className="col-lg-3">
             <SyndicateActivity activityData={activityData} />
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

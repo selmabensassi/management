@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import axiosInstance from '../../config/axiosConfig';
 import { RiAddCircleFill, RiDeleteBin6Line } from 'react-icons/ri';
 import { Link } from 'react-router-dom';
+import CreateInvoice from './invoiceCreate';
 
-export default function InvoiceList() {
+export default function InvoiceList({ setSentInvoiceCount }) {
   const [invoices, setInvoices] = useState([]);
   const [filteredInvoices, setFilteredInvoices] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -29,7 +30,7 @@ export default function InvoiceList() {
     };
 
     fetchInvoices();
-  }, []);
+  }, [invoices]);
 
   const handleDelete = async (id) => {
     try {
@@ -83,7 +84,7 @@ export default function InvoiceList() {
         <h4 className="card-title mb-0">Invoices</h4>
 
         <Link
-          to="add"
+          to="add" setSentInvoiceCount={setSentInvoiceCount}
           className="btn btn-primary"
           style={{ marginLeft: 'auto', padding: '8px 16px' }}
         >
@@ -139,8 +140,8 @@ export default function InvoiceList() {
             {filteredInvoices.map((invoice) => (
               <tr key={invoice._id}>
                 <td>{invoice._id}</td>
-                <td>{"selma ben sassi"}</td>
-                <td>{"selmabensassi987@gmail.com"}</td>
+                <td>{invoice.customer}</td>
+                <td>{invoice.email}</td>
                 <td>{new Date(invoice.issueDate).toLocaleDateString()}</td>
                 <td>{new Date(invoice.dueDate).toLocaleDateString()}</td>
                 <td>{invoice.amount}</td>

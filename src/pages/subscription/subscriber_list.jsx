@@ -22,7 +22,7 @@ function SubscriptionList() {
     };
 
     fetchSubscriptions();
-  }, [showAddSubscriptionModal, showDeleteSubscriptionModal]);  
+  }, [,subscriptions,showAddSubscriptionModal, showDeleteSubscriptionModal]);  
 
    const openAddSubscriptionModal = () => setShowAddSubscriptionModal(true);
   const closeAddSubscriptionModal = () => setShowAddSubscriptionModal(false);
@@ -69,7 +69,7 @@ function SubscriptionList() {
                 <td>{sub.subscriptionType}</td>
                 <td>{sub.description}</td>
                 <td>{`$${sub.price}`}</td>
-                <td>{new Date(sub.joiningDate).toLocaleDateString()}</td>
+                <td>{new Date(sub.creationDate).toLocaleDateString()}</td>
                 <td>{sub.status}</td>
                 <td>
                   <button
