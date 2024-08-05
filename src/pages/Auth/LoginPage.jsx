@@ -17,32 +17,33 @@ export default function LoginPage() {
   const [rememberMe, setRememberMe] = useState(false);
 
   const onSubmit = async (data) => {
-    setAuth(true);
-    setError(null);
-    setIsLoading(true);
-    try {
-      let response = await axiosInstance.post('/auth/login', data);
-      const token = response.data.token;
+  setAuth(true);
+  setError(null);
+  setIsLoading(true);
+  try {
+    let response = await axiosInstance.post('/auth/login', data);
+    const token = response.data.token;
 
-      if (rememberMe) {
-        localStorage.setItem('token', token);
-      } else {
-        sessionStorage.setItem('token', token);
-      }
-
-      const userType = response.data.userType;
-      setAuth(true);
-      setUser(response.data.user);
-      setUserType(userType);
-
-      if (userType === 'admin') {
-        navigate('/syndic-dashboard');
-      }
-    } catch (e) {
-      setError(e.response?.data?.message || 'An error occurred. Please try again.');
+    if (rememberMe) {
+      localStorage.setItem('token', token);
+    } else {
+      sessionStorage.setItem('token', token);
     }
-    setIsLoading(false);
-  };
+const tokenret = localStorage.getItem('token') || sessionStorage.getItem('token');
+    const userType = response.data.userType;
+    setAuth(true);
+    setUser(response.data.user);
+    setUserType(userType);
+
+    if (userType === 'admin') {
+      navigate('/syndic-dashboard');
+    }
+  } catch (e) {
+    setError(e.response?.data?.message || 'An error occurred. Please try again.');
+  }
+  setIsLoading(false);
+};
+
 
   return (
     <div className="col-lg-6" style={{ backgroundColor: "#f6f7fc" }}>

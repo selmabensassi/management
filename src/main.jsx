@@ -49,6 +49,8 @@ import Logout from './pages/logout';
 import ForgetPasswordPage from './pages/Auth/forgetPassword';
 import ResetPasswordPage from './pages/Auth/Resetpassword';
 import ProfilePage from './pages/profile';
+import EditClaimStatus from './pages/Claims/EditClaimStatus';
+
 
 const router = createBrowserRouter([
 	{
@@ -117,6 +119,8 @@ const router = createBrowserRouter([
       	{ path: 'claim/details', element: <TicketDetails /> },
      	{ path: 'claim/header', element: <TicketHeader /> },
       	{ path: 'claim/comments', element: <Comments /> },
+      	{ path: 'claim/:claim_id/edit', element: <EditClaimStatus /> },
+
     ],
 },
 {

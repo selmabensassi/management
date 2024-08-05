@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import axiosInstance from '../../config/axiosConfig';
 import InvoiceList from './invoiceList';
 import { RiAddCircleFill } from 'react-icons/ri';
+import CreateInvoice from './invoiceCreate'; 
 
 const InvoiceCards = ({ InvoiceData }) => {
   return (
@@ -36,20 +36,22 @@ export default function InvoiceManagement() {
   useEffect(() => {
     const fetchInvoices = async () => {
       try {
-        const response = await axiosInstance.get('/payments/all');
-        setInvoiceData(response.data);
+        const response = await axiosInstance.get('/invoices/all');
+        console.log('payments data :', response.data);
+        setInvoiceData(Array.isArray(response.data) ? response.data : []);
       } catch (error) {
         console.error('Failed to fetch payment data:', error);
+        setInvoiceData([]);
       }
     };
 
     fetchInvoices();
-  }, []);
+  }, [invoiceData]);
 
   const totalInvoices = invoiceData.length + sentInvoiceCount;
-  const paidInvoices = invoiceData.filter(invoice => invoice.status === 'paid').length;
-  const unpaidInvoices = invoiceData.filter(invoice => invoice.status === 'pending').length;
-  const cancelledInvoices = invoiceData.filter(invoice => invoice.status === 'cancelled').length;
+  const paidInvoices = invoiceData.filter(invoice => invoice.paymentStatus === 'paid').length;
+  const unpaidInvoices = invoiceData.filter(invoice => invoice.paymentStatus === 'Unpaid').length;
+  const cancelledInvoices = invoiceData.filter(invoice => invoice.paymentStatus === 'cancelled').length;
 
   const InvoiceData = [
     {

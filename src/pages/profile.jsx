@@ -48,7 +48,17 @@ const ProfilePage = () => {
       <div className="bg-primary text-white p-4 rounded mb-4">
         <div className="row align-items-center">
           <div className="col-auto">
-            <img src={user?.profilePicture || 'assets/images/users/avatar-1.jpg'} alt="user-img" className="img-thumbnail rounded-circle" width="100" height="100" />
+            <img 
+              src={user?.profilePicture || '/public/images/avatar-2.jpg'} 
+              alt="user-img" 
+              className="img-thumbnail rounded-circle" 
+              width="100" 
+              height="100" 
+              onError={(e) => {
+                e.target.onerror = null; 
+                e.target.src = '/public/images/avatar-2.jpg'; 
+              }}
+            />
           </div>
           <div className="col">
             <h3>{user?.firstName} {user?.lastName}</h3>

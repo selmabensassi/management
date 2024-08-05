@@ -141,19 +141,6 @@ function ActiveContractsByType({ data }) {
 
 
 function ContractList({ contracts, onDelete }) {
-  const handleAutoRenewToggle = (contractId, currentStatus) => {
-    axiosInstance.patch(`/payment/${contractId}`, { autoRenew: !currentStatus })
-      .then(response => {
-        console.log('Auto-renew status updated');
-        setContracts(prevContracts =>
-          prevContracts.map(contract =>
-            contract._id === contractId ? { ...contract, autoRenew: !currentStatus } : contract
-          )
-        );
-      })
-      .catch(error => console.error('Error updating auto-renew status:', error));
-  };
-
   return (
     <div className="card">
       <div className="card-header">
@@ -185,21 +172,7 @@ function ContractList({ contracts, onDelete }) {
                     {contract.status}
                   </span>
                 </td>
-                {/* <td>
-                  <div className="form-check form-switch">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      checked={contract.autoRenew}
-                      onChange={() => handleAutoRenewToggle(contract._id, contract.autoRenew)}
-                    />
-                  </div>
-                </td> */}
                 <td>
-                  <button className="btn btn-primary btn-sm" onClick={() => alert('Edit function not implemented')}>
-                    Edit
-                  </button>
-                  {' '}
                   <button className="btn btn-danger btn-sm" onClick={() => onDelete(contract._id)}>
                     Delete
                   </button>
@@ -215,8 +188,7 @@ function ContractList({ contracts, onDelete }) {
 
 
 export default function ContractManagement() {
-  const [userCardsData, setUserCardsData] = useState([
-  ]);
+  const [userCardsData, setUserCardsData] = useState([]);
   const [revenueHistoryData, setRevenueHistoryData] = useState([]);
   const [activeContractsData, setActiveContractsData] = useState([]);
   const [contracts, setContracts] = useState([]);
@@ -257,8 +229,13 @@ export default function ContractManagement() {
     .catch(error => console.error('Error fetching payments data:', error));
 }, []);
 
-  const handleDelete = (contractId) => {
-    setContracts(contracts.filter(contract => contract.id !== contractId));
+  const handleDelete = async (contractId) => {
+    try {
+      await axiosInstance.delete(`/payment/delete/${contractId}`);
+      setContracts(contracts.filter(contract => contract._id !== contractId));
+    } catch (error) {
+      console.error('Error deleting contract:', error);
+    }
   };
 
   return (

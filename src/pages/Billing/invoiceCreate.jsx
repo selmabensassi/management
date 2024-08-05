@@ -1,15 +1,12 @@
 import React, { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../config/axiosConfig';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import { RiPrinterLine, RiDownload2Line, RiSendPlaneFill } from 'react-icons/ri';
 
 function CreateInvoice({ setSentInvoiceCount }) {
-  const location = useLocation();
   const navigate = useNavigate();
-  const { sentInvoiceCount } = location.state || { sentInvoiceCount: 0 };
-
   const [invoiceData, setInvoiceData] = useState({
     syndicateID: '',
     amount: '',
@@ -53,8 +50,7 @@ function CreateInvoice({ setSentInvoiceCount }) {
       
       console.log('Invoice sent successfully', response.data);
 
-      // Increment invoice count
-      setSentInvoiceCount((prevCount) => prevCount + 1);
+      setSentInvoiceCount(prevCount => prevCount + 1);
       navigate('/', { state: { sentInvoiceCount: sentInvoiceCount + 1 } });
     } catch (error) {
       console.error('Error sending invoice', error);
@@ -64,14 +60,11 @@ function CreateInvoice({ setSentInvoiceCount }) {
   const handleDownloadPDF = () => {
     const doc = new jsPDF();
 
-    // Add logo
     doc.addImage('/images/logo.png', 'PNG', 10, 10, 50, 20);
 
-    // Add invoice title
     doc.setFontSize(20);
     doc.text('Invoice', 105, 20, null, null, 'center');
 
-    // Add company details
     doc.setFontSize(12);
     doc.text('Data-Era', 10, 40);
     doc.text('Address: Tunis, Tunisia ', 10, 50);
@@ -79,16 +72,13 @@ function CreateInvoice({ setSentInvoiceCount }) {
     doc.text('Website: www.data-era.com', 10, 80);
     doc.text('Contact No: 0123456789', 10, 90);
 
-    // Add invoice details
     doc.text(`Invoice No: ${invoiceData.syndicateID}`, 150, 40);
     doc.text(`Date: ${invoiceData.issueDate}`, 150, 50);
     doc.text(`Payment Status: ${invoiceData.paymentStatus}`, 150, 60);
     doc.text(`Total Amount: $${invoiceData.amount}`, 150, 70);
 
-    // Add billing and shipping address
     doc.text('Billing Address:', 10, 100);
 
-    // Add table
     doc.autoTable({
       startY: 120,
       head: [['#', 'Product Details', 'Rate', 'Quantity', 'Amount']],

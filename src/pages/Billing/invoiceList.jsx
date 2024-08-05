@@ -18,7 +18,6 @@ export default function InvoiceList({ setSentInvoiceCount }) {
     const fetchInvoices = async () => {
       try {
         const response = await axiosInstance.get('/invoices/all');
-        console.log('API response:', response.data);
         setInvoices(response.data);
         setFilteredInvoices(response.data);
         setLoading(false);

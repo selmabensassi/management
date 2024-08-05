@@ -1,17 +1,72 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axiosInstance from '../../config/axiosConfig';
 
-const Task = ({ task }) => {
+const Task = ({ task, onMoveTask, onDeleteTask }) => {
+  const [boards, setBoards] = useState([]);
+  const [loadingBoards, setLoadingBoards] = useState(true);
+  const [boardsError, setBoardsError] = useState(null);
+
+  useEffect(() => {
+    const fetchBoards = async () => {
+      try {
+        const response = await axiosInstance.get('/board/all');
+        setBoards(response.data);
+      } catch (err) {
+        setBoardsError(err.message);
+      } finally {
+        setLoadingBoards(false);
+      }
+    };
+
+    fetchBoards();
+  }, []);
+
+  const handleMove = (newBoardId) => {
+    onMoveTask(task._id, newBoardId);
+  };
+
+  const handleDelete = () => {
+    onDeleteTask(task._id);
+  };
+
   return (
     <div className="card tasks-box">
       <div className="card-body">
         <div className="d-flex mb-2">
-          <h6 className="fs-15 mb-0 flex-grow-1 text-truncate task-title"><a href="apps-tasks-details.html" className="link-secondary">{task.taskTitle}</a></h6>
+          <h6 className="fs-15 mb-0 flex-grow-1 text-truncate task-title">
+            <span className="link-secondary" role="button">{task.taskTitle}</span>
+          </h6>
           <div className="dropdown">
-            <a href="javascript:void(0);" className="text-muted" id={`dropdownMenuLink${task._id}`} data-bs-toggle="dropdown" aria-expanded="false"><i className="ri-more-fill"></i></a>
+            <span
+              className="text-muted"
+              id={`dropdownMenuLink${task._id}`}
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+              role="button"
+            >
+              <i className="ri-more-fill"></i>
+            </span>
             <ul className="dropdown-menu" aria-labelledby={`dropdownMenuLink${task._id}`}>
-              <li><a className="dropdown-item" href="apps-tasks-details.html"><i className="ri-eye-fill align-bottom me-2 text-muted"></i> View</a></li>
-              <li><a className="dropdown-item" href="#"><i className="ri-edit-2-line align-bottom me-2 text-muted"></i> Edit</a></li>
-              <li><a className="dropdown-item" data-bs-toggle="modal" href="#deleteRecordModal"><i className="ri-delete-bin-5-line align-bottom me-2 text-muted"></i> Delete</a></li>
+              <li className="dropdown-item">
+                <h6 className="fs-15">Move to...</h6>
+                {loadingBoards ? (
+                  <p className="dropdown-item">Loading...</p>
+                ) : boardsError ? (
+                  <p className="dropdown-item">Error: {boardsError}</p>
+                ) : boards.length > 0 ? (
+                  boards.map(board => (
+                    <p key={board._id} role="button" onClick={() => handleMove(board._id)} className="dropdown-item">
+                      {board.boardName}
+                    </p>
+                  ))
+                ) : (
+                  <p className="dropdown-item">No boards available</p>
+                )}
+              </li>
+              <li><hr className="dropdown-divider" /></li>
+              <li className="dropdown-item text-danger" role="button" onClick={handleDelete}>
+                <i className="ri-delete-bin-5-line align-bottom me-2 text-danger"></i> Delete
+              </li>
             </ul>
           </div>
         </div>
@@ -25,9 +80,17 @@ const Task = ({ task }) => {
           <div className="flex-shrink-0">
             <div className="avatar-group">
               {task.teamMembers && task.teamMembers.map(member => (
-                <a key={member} href="javascript: void(0);" className="avatar-group-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title={member}>
+                <span
+                  key={member}
+                  className="avatar-group-item"
+                  data-bs-toggle="tooltip"
+                  data-bs-trigger="hover"
+                  data-bs-placement="top"
+                  title={member}
+                  role="button"
+                >
                   <img src={`path_to_default_avatar`} alt="" className="rounded-circle avatar-xxs" />
-                </a>
+                </span>
               ))}
             </div>
           </div>
@@ -41,13 +104,13 @@ const Task = ({ task }) => {
           <div className="flex-shrink-0">
             <ul className="link-inline mb-0">
               <li className="list-inline-item">
-                <a href="javascript:void(0)" className="text-muted"><i className="ri-eye-line align-bottom"></i> {task.views}</a>
+                <span className="text-muted"><i className="ri-eye-line align-bottom"></i> {task.views}</span>
               </li>
               <li className="list-inline-item">
-                <a href="javascript:void(0)" className="text-muted"><i className="ri-question-answer-line align-bottom"></i> {task.comments}</a>
+                <span className="text-muted"><i className="ri-question-answer-line align-bottom"></i> {task.comments}</span>
               </li>
               <li className="list-inline-item">
-                <a href="javascript:void(0)" className="text-muted"><i className="ri-attachment-2 align-bottom"></i> {task.attachments}</a>
+                <span className="text-muted"><i className="ri-attachment-2 align-bottom"></i> {task.attachments}</span>
               </li>
             </ul>
           </div>

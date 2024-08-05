@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import ReactApexChart from 'react-apexcharts';
 import axiosInstance from '../../../../config/axiosConfig';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
 import { Link } from 'react-router-dom';
 
 const MeetingOverviewCards = ({ data }) => {
@@ -125,45 +124,6 @@ const MeetingsHistory = ({ meetings }) => {
   );
 };
 
-
-// const AllMeetingsBySubscription = ({ PieData }) => {
-//   const chartOptions = {
-//     chart: {
-//       type: 'pie',
-//     },
-//     labels: PieData.map(item => item.label),
-//     responsive: [{
-//       breakpoint: 480,
-//       options: {
-//         chart: {
-//           width: 200
-//         },
-//         legend: {
-//           position: 'bottom'
-//         }
-//       }
-//     }],
-//     legend: {
-//       position: 'right',
-//       offsetY: 0,
-//       height: 230,
-//     }
-//   };
-
-//   const series = PieData.map(item => item.value);
-
-//   return (
-//     <div className="card">
-//       <div className="card-header">
-//         <h4 className="card-title mb-0">All meetings (by subscription Plan)</h4>
-//       </div>
-//       <div className="card-body">
-//         <ReactApexChart options={chartOptions} series={series} type="pie" height={350} />
-//       </div>
-//     </div>
-//   );
-// };
-
 const MeetingsVolumeTrend = ({ chartSeries, chartOptions }) => {
   return (
     <div className="card">
@@ -177,93 +137,56 @@ const MeetingsVolumeTrend = ({ chartSeries, chartOptions }) => {
   );
 };
 
-// const SyndicateActivity = ({ activityData }) => {
-//   return (
-//     <div className="card card-height-100">
-//       <div className="card-header border-bottom-dashed align-items-center d-flex">
-//         <h4 className="card-title mb-0 flex-grow-1">Syndicate Activity</h4>
-//         <div className="flex-shrink-0">
-//           <button type="button" className="btn btn-soft-primary btn-sm">
-//             View All Activity
-//           </button>
-//         </div>
-//       </div>
-//       <div className="card-body p-0">
-//         <div data-simplebar style={{ maxHeight: '364px' }} className="p-3">
-//           <div className="activity-timeline activity-main">
-//             {activityData.map((item, index) => (
-//               <div key={index} className="activity-item d-flex">
-//                 <div className="flex-shrink-0 avatar-xs activity-avatar">
-//                   <div className="avatar-title rounded-circle bg-secondary">
-//                     <i className={item.icon}></i>
-//                   </div>
-//                 </div>
-//                 <div className="flex-grow-1 ms-3">
-//                   <h6 className="mb-1">{item.title}</h6>
-//                   <p className="text-muted mb-1">{item.requests} requests</p>
-//                   <small className="mb-0 text-muted">{item.time}</small>
-//                 </div>
-//               </div>
-//             ))}
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-
- const MeetingManagement = () => {
+const MeetingManagement = () => {
   const { syndicateId } = useParams();
-  const [meetData, setmeetData] = useState([]);
+  const [meetData, setMeetData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [chartSeries, setChartSeries] = useState([{ name: 'Meetings', data: [] }]);
 
-const fetchSyndicateAdmin = async () => {
-  setIsLoading(true);
-  try {
-    const adminResponse = await axiosInstance.get(`/Syndic/${syndicateId}`);
-    const buildings = adminResponse.data?.data?.syndic?.buildings || [];
-    console.log("Buildings Data:", buildings);
+  const fetchSyndicateAdmin = async () => {
+    setIsLoading(true);
+    try {
+      const adminResponse = await axiosInstance.get(`/Syndic/${syndicateId}`);
+      const buildings = adminResponse.data?.data?.syndic?.buildings || [];
+      console.log("Buildings Data:", buildings);
 
-    const meetingsArrays = await Promise.all(
-      buildings.map(buildingId =>
-        axiosInstance.get(`/${buildingId}/meets`).then(res => {
-          console.log(`Meetings for building ${buildingId}:`, res.data.meets);
-          return res.data.meets;
-        }).catch(error => {
-          console.error(`Error fetching meetings for building ${buildingId}:`, error);
-          return []; 
-        })
-      )
-    );
+      const meetingsArrays = await Promise.all(
+        buildings.map(buildingId =>
+          axiosInstance.get(`/${buildingId}/meets`).then(res => {
+            console.log(`Meetings for building ${buildingId}:`, res.data.meets);
+            return res.data.meets;
+          }).catch(error => {
+            console.error(`Error fetching meetings for building ${buildingId}:`, error);
+            return [];
+          })
+        )
+      );
 
-    const allMeetings = meetingsArrays.flat();
-    console.log("All Meetings:", allMeetings);
+      const allMeetings = meetingsArrays.flat();
+      console.log("All Meetings:", allMeetings);
 
-    if (allMeetings.length > 0) {
-      setmeetData(allMeetings);
-      const monthlyData = aggregateMeetingsByMonth(allMeetings);
-      console.log("Monthly Data:", monthlyData);
-      setChartSeries([{ name: 'Meetings', data: monthlyData }]);
-    } else {
-      console.log("No meetings found");
+      if (allMeetings.length > 0) {
+        setMeetData(allMeetings);
+        const monthlyData = aggregateMeetingsByMonth(allMeetings);
+        console.log("Monthly Data:", monthlyData);
+        setChartSeries([{ name: 'Meetings', data: monthlyData }]);
+      } else {
+        console.log("No meetings found");
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      setError('Failed to fetch data. Please try again later.');
+    } finally {
+      setIsLoading(false);
     }
-  } catch (error) {
-    console.error('Error fetching data:', error);
-    setError('Failed to fetch data. Please try again later.');
-  } finally {
-    setIsLoading(false);
-  }
-};
-
+  };
 
   const aggregateMeetingsByMonth = (meetings) => {
     const counts = {
-        1: 0, 2: 0, 3: 0, 4: 0,
-        5: 0, 6: 0, 7: 0, 8: 0,
-        9: 0, 10: 0, 11: 0, 12: 0
+      1: 0, 2: 0, 3: 0, 4: 0,
+      5: 0, 6: 0, 7: 0, 8: 0,
+      9: 0, 10: 0, 11: 0, 12: 0
     };
 
     meetings.forEach(meeting => {
@@ -271,46 +194,44 @@ const fetchSyndicateAdmin = async () => {
       counts[month]++;
     });
     return Object.entries(counts).map(([month, count]) => ({
-      x: month, 
-      y: count  
+      x: month,
+      y: count
     }));
-};
+  };
 
   useEffect(() => {
     fetchSyndicateAdmin();
   }, [syndicateId]);
 
-
   const calculateMeetingCounts = () => {
-  const currentMonth = new Date().getMonth() + 1;
-  const counts = {
-    upcoming: 0,
-    finished: 0,
-    canceled: 0
-  };
+    const currentMonth = new Date().getMonth() + 1;
+    const counts = {
+      upcoming: 0,
+      finished: 0,
+      canceled: 0
+    };
 
-  meetData.forEach(meeting => {
-    const meetingMonth = new Date(meeting.startDate).getMonth() + 1;
-    if (meetingMonth === currentMonth) {
-      switch (meeting.status) {
-        case 'upcoming':
-          counts.upcoming++;
-          break;
-        case 'finished':
-          counts.finished++;
-          break;
-        case 'canceled':
-          counts.canceled++;
-          break;
-        default:
-          break;
+    meetData.forEach(meeting => {
+      const meetingMonth = new Date(meeting.startDate).getMonth() + 1;
+      if (meetingMonth === currentMonth) {
+        switch (meeting.status) {
+          case 'upcoming':
+            counts.upcoming++;
+            break;
+          case 'finished':
+            counts.finished++;
+            break;
+          case 'canceled':
+            counts.canceled++;
+            break;
+          default:
+            break;
+        }
       }
-    }
-  });
+    });
 
-  return counts;
-};
-
+    return counts;
+  };
 
   const data = [
     { name: "Scheduled Meeting", count: calculateMeetingCounts().upcoming, percentageChange: "", changeType: "", icon: "bx-calendar-event" },
@@ -318,65 +239,55 @@ const fetchSyndicateAdmin = async () => {
     { name: "Cancelled Meeting", count: calculateMeetingCounts().canceled, percentageChange: "", changeType: "", icon: "bx-block" }
   ];
 
-const meetings = meetData.map(meeting => ({
-  id: meeting._id,
-  day: new Date(meeting.startDate).getDate(),  
-  month: new Date(meeting.startDate).toLocaleString('en-US', { weekday: 'short' }),  
-  time: `${new Date(meeting.startDate).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })} - ${new Date(meeting.endDate).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}`,
-  description: meeting.description,
-  participantCount: meeting.participants ? meeting.participants.length : 0,
-  avatars: meeting.participants ? meeting.participants.map(part => part.avatar) : []
-}));
+  const meetings = meetData.map(meeting => ({
+    id: meeting._id,
+    day: new Date(meeting.startDate).getDate(),
+    month: new Date(meeting.startDate).toLocaleString('en-US', { weekday: 'short' }),
+    time: meeting.endDate 
+      ? `${new Date(meeting.startDate).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })} - ${new Date(meeting.endDate).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}`
+      : `${new Date(meeting.startDate).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}`,
+    description: meeting.title,
+    participantCount: meeting.participants ? meeting.participants.length : 0,
+    avatars: meeting.participants ? meeting.participants.map(part => part.avatar) : []
+  }));
 
-  const PieData = [
-    { label: "Great", value: 50 },
-    { label: "Good", value: 30 },
-    { label: "Okay", value: 10 },
-    { label: "Poor", value: 7 },
-    { label: "Bad", value: 3 }
-  ];
- const chartOptions = {
-  chart: {
-    height: 350,
-    type: 'area',
-    zoom: {
-      enabled: false
+  const chartOptions = {
+    chart: {
+      height: 350,
+      type: 'area',
+      zoom: {
+        enabled: false
+      }
+    },
+    xaxis: {
+      categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
+      tickPlacement: 'on'
+    },
+    yaxis: {
+      title: {
+        text: 'Number of Meetings'
+      }
+    },
+    tooltip: {
+      x: {
+        format: 'MMM'
+      }
+    },
+    colors: ['#2E93fA'],
+    fill: {
+      type: 'gradient',
+      gradient: {
+        shadeIntensity: 1,
+        opacityFrom: 0.7,
+        opacityTo: 0.9,
+        stops: [0, 100]
+      }
     }
-  },
-  xaxis: {
-    categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
-    tickPlacement: 'on'
-  },
-  yaxis: {
-    title: {
-      text: 'Number of Meetings'
-    }
-  },
-  tooltip: {
-    x: {
-      format: 'MMM'
-    }
-  },
-  colors: ['#2E93fA'],
-  fill: {
-    type: 'gradient',
-    gradient: {
-      shadeIntensity: 1,
-      opacityFrom: 0.7,
-      opacityTo: 0.9,
-      stops: [0, 100]
-    }
-  }
-};
-
-
-  const activityData = [
-    { icon: 'ri-video-chat-line', title: 'Meeting for campaign', requests: 20, time: '02:14 PM Today' },
-  ];
+  };
 
   return (
     <div className="main-content">
-      <div className="container-fluid" style={{  paddingLeft: '15px', paddingRight: '15px' }}>
+      <div className="container-fluid" style={{ paddingLeft: '15px', paddingRight: '15px' }}>
         <div className="row mb-4">
           <div className="col-md-9">
             <div className="page-title-box">
