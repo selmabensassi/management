@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import socket from './socket';
 import axiosInstance from '../../config/axiosConfig';
 import moment from 'moment';
@@ -8,6 +8,7 @@ const ChatMessages = ({ currentChat }) => {
   const [messages, setMessages] = useState([]);
   const [adminId, setAdminId] = useState('');
   const [syndicId, setSyndicId] = useState('');
+  const messagesEndRef = useRef(null);
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -44,7 +45,11 @@ const ChatMessages = ({ currentChat }) => {
     return () => {
       socket.off('message', handleMessage);
     };
-  }, [currentChat]);
+  }, [currentChat,messages]);
+
+  // useEffect(() => {
+  //   messagesEndRef.current?.scrollIntoView({ behavior: 'auto' });
+  // }, [messages]);
 
   const messageStyle = (isAdmin) => ({
     maxWidth: '45%',
@@ -97,6 +102,7 @@ const ChatMessages = ({ currentChat }) => {
             </li>
           );
         })}
+        <div ref={messagesEndRef} />
       </ul>
     </div>
   );

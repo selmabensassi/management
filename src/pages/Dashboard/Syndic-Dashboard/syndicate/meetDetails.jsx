@@ -171,43 +171,43 @@ const OrdreDuJour = ({ meetingId }) => {
   );
 };
 
-const AllMeetingsBySubscription = ({ PieData }) => {
-  const chartOptions = {
-    chart: {
-      type: 'pie',
-    },
-    labels: PieData.map(item => item.label),
-    responsive: [{
-      breakpoint: 480,
-      options: {
-        chart: {
-          width: 200
-        },
-        legend: {
-          position: 'bottom'
-        }
-      }
-    }],
-    legend: {
-      position: 'right',
-      offsetY: 0,
-      height: 230,
-    }
-  };
+// const AllMeetingsBySubscription = ({ PieData }) => {
+//   const chartOptions = {
+//     chart: {
+//       type: 'pie',
+//     },
+//     labels: PieData.map(item => item.label),
+//     responsive: [{
+//       breakpoint: 480,
+//       options: {
+//         chart: {
+//           width: 200
+//         },
+//         legend: {
+//           position: 'bottom'
+//         }
+//       }
+//     }],
+//     legend: {
+//       position: 'right',
+//       offsetY: 0,
+//       height: 230,
+//     }
+//   };
 
-  const series = PieData.map(item => item.value);
+//   const series = PieData.map(item => item.value);
 
-  return (
-    <div className="card">
-      <div className="card-header">
-        <h4 className="card-title mb-0">All meetings (by subscription Plan)</h4>
-      </div>
-      <div className="card-body">
-        <ReactApexChart options={chartOptions} series={series} type="pie" height={350} />
-      </div>
-    </div>
-  );
-};
+//   return (
+//     <div className="card">
+//       <div className="card-header">
+//         <h4 className="card-title mb-0">All meetings (by subscription Plan)</h4>
+//       </div>
+//       <div className="card-body">
+//         <ReactApexChart options={chartOptions} series={series} type="pie" height={350} />
+//       </div>
+//     </div>
+//   );
+// };
 
 const MeetingDetails = () => {
   const { meetingId } = useParams();
@@ -227,7 +227,6 @@ const MeetingDetails = () => {
         console.log("Meeting Data:", meetingResponse.data);
         console.log("Attendance Data:", attendanceResponse.data);
 
-        // Check if attendance data is properly fetched
         if (attendanceResponse.data && attendanceResponse.data.users) {
           setAttendanceData(attendanceResponse.data.users);
           console.log("Attendance Data Set:", attendanceResponse.data.users);
@@ -236,7 +235,6 @@ const MeetingDetails = () => {
           console.log("No attendance data found for the meeting.");
         }
 
-        // Check for recordings count
         if (meetingResponse.data && meetingResponse.data.meeting) {
           const meeting = meetingResponse.data.meeting;
           const recordings = meeting.record ? 1 : 0;
@@ -267,15 +265,7 @@ const MeetingDetails = () => {
           <div className="col-md-6">
             <OrdreDuJour meetingId={meetingId} />
           </div>
-          <div className="col-md-6">
-            <AllMeetingsBySubscription PieData={[
-              { label: "Great", value: 50 },
-              { label: "Good", value: 30 },
-              { label: "Okay", value: 10 },
-              { label: "Poor", value: 7 },
-              { label: "Bad", value: 3 }
-            ]} />
-          </div>
+          
         </div>
       </div>
     </div>

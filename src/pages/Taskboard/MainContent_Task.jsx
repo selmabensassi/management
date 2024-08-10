@@ -34,7 +34,7 @@ const Taskboard = () => {
           <Header />
           <div className="tasks-board mb-3" id="kanbanboard">
             {boards.map(board => (
-              <Board key={board._id} title={board.boardName} boardId={board._id} />
+              <Board key={board._id} title={board.boardName} boardId={board._id} boards={boards} />
             ))}
           </div>
           <Modals />
@@ -42,6 +42,6 @@ const Taskboard = () => {
       </div>
     </div>
   );
-}
+};
 
 export default Taskboard;

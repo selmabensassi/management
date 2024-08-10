@@ -25,10 +25,28 @@ const Board = ({ title, boardId }) => {
 
   useEffect(() => {
     fetchTasks();
-  }, [boardId]);
+  }, [boardId,tasks]);
 
   const handleAddTask = (taskDetails) => {
     setTasks([...tasks, taskDetails]);
+  };
+
+  const handleMoveTask = async (taskId, newBoardId) => {
+    try {
+      await axiosInstance.put(`/task/${taskId}/move`, { newBoardId });
+      setTasks(tasks.filter(task => task._id !== taskId));
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const handleDeleteTask = async (taskId) => {
+    try {
+      await axiosInstance.delete(`/task/${taskId}`);
+      setTasks(tasks.filter(task => task._id !== taskId));
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   if (loading) return <div>Loading...</div>;
@@ -55,7 +73,7 @@ const Board = ({ title, boardId }) => {
       <div data-simplebar className="tasks-wrapper px-3 mx-n3" style={{ flexGrow: 1, overflowY: 'auto' }}>
         <div id={`${title.toLowerCase()}-task`} className="tasks">
           {tasks.map(task => (
-            <Task key={task._id} task={task} />
+            <Task key={task._id} task={task} onMoveTask={handleMoveTask} onDeleteTask={handleDeleteTask} />
           ))}
         </div>
       </div>

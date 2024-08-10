@@ -44,7 +44,6 @@ const Header = () => {
             </div>
             <div className="col-auto ms-sm-auto">
               <div className="avatar-group" id="newMembar">
-                {/* Add avatar images here */}
               </div>
             </div>
           </div>

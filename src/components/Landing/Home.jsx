@@ -32,7 +32,7 @@ const Home = () => {
                             <p className="lead text-muted lh-base">SyndicateManager is a comprehensive and dynamic platform tailored for syndicates, providing an intuitive solution to efficiently manage their buildings.</p>
                             <div className="d-flex gap-2 justify-content-center mt-4">
                                 <Link to="auth-signup-basic.html" className="btn btn-primary">Get Started <i className="ri-arrow-right-line align-middle ms-1"></i></Link>
-                                <Link to="pages-pricing.html" className="btn btn-danger">View Plans <i className="ri-eye-line align-middle ms-1"></i></Link>
+                                <a href="#plans" className="btn btn-danger">View Plans <i className="ri-eye-line align-middle ms-1"></i></a>
                             </div>
                         </div>
 

@@ -7,7 +7,6 @@ import TestPage from './pages/TestPage';
 import AdminsListPage from './pages/Admins/AdminsListPage';
 import CreateAdminPage from './pages/Admins/CreateAdminPage';
 import EditAdminPage from './pages/Admins/EditAdminPage';
-import SyndicSignupPage from './pages/Auth/SyndicSignupPage';
 
 import App from './App';
 import LoginPage from './pages/Auth/LoginPage';
@@ -47,6 +46,10 @@ import ChatMessages from './pages/chat/ChatMessages';
 import ChatLayout from './pages/chat/ChatLayout';
 import ChatSidebar from './pages/chat/sidebarMSG';
 import Logout from './pages/logout';
+import ForgetPasswordPage from './pages/Auth/forgetPassword';
+import ResetPasswordPage from './pages/Auth/Resetpassword';
+import ProfilePage from './pages/profile';
+import EditClaimStatus from './pages/Claims/EditClaimStatus';
 
 
 const router = createBrowserRouter([
@@ -59,17 +62,17 @@ const router = createBrowserRouter([
 		element: <AuthLayout />,
 		children: [
 			{ path: '/auth/login', element: <LoginPage /> },
-			{ path: '/auth/signup/syndic', element: <SyndicSignupPage /> },
+			{ path: '/auth/forget', element: <ForgetPasswordPage /> },
+			{ path: '/auth/resetPassword/:token', element: <ResetPasswordPage /> },
+
+
 		],
 	},
 	{
-		path: '/dashboard',
+		path: '/profile',
 		element: <MainLayout />,
 		children: [
-			{ path: '/dashboard', element: <TestPage /> },
-			{ path: '/dashboard/admins', element: <AdminsListPage /> },
-			{ path: '/dashboard/admins/create', element: <CreateAdminPage /> },
-			{ path: '/dashboard/admins/:id/edit', element: <EditAdminPage /> },
+			{ path: '/profile/', element: <ProfilePage/> },
 
 		],
 	},
@@ -116,6 +119,8 @@ const router = createBrowserRouter([
       	{ path: 'claim/details', element: <TicketDetails /> },
      	{ path: 'claim/header', element: <TicketHeader /> },
       	{ path: 'claim/comments', element: <Comments /> },
+      	{ path: 'claim/:claim_id/edit', element: <EditClaimStatus /> },
+
     ],
 },
 {

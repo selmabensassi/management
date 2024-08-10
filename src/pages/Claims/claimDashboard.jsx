@@ -1,6 +1,6 @@
+import React, { useState, useEffect, useRef } from 'react';
 import ClaimList from './claimList';
 import AddClaim from './Add_claim';
-import React, {useRef, useState, useEffect } from 'react';
 import ReactApexChart from 'react-apexcharts';
 import axiosInstance from '../../config/axiosConfig';
 
@@ -17,7 +17,6 @@ const UserCards = ({ stats }) => {
                   <h2 className="mt-4 ff-secondary fw-semibold">
                     <span className="counter-value" data-target={card.count}>{card.count}</span>
                   </h2>
-                 
                 </div>
                 <div>
                   <div className="avatar-sm flex-shrink-0">
@@ -35,55 +34,7 @@ const UserCards = ({ stats }) => {
   );
 };
 
-// const UnresolvedTicketsByPriority = () => {
-//   const series = [
-//     { name: 'PRODUCT A', data: [44, 55, 41, 67, 22, 43, 21] },
-//     { name: 'PRODUCT B', data: [13, 23, 20, 8, 13, 27, 22] },
-//     { name: 'PRODUCT C', data: [11, 17, 15, 15, 21, 14, 13] },
-//     { name: 'PRODUCT D', data: [21, 7, 25, 13, 22, 8, 13] },
-//   ];
-
-//   const options = {
-//     chart: {
-//       type: 'bar',
-//       height: 350,
-//       stacked: true,
-//     },
-//     plotOptions: {
-//       bar: {
-//         horizontal: false,
-//       },
-//     },
-//     xaxis: {
-//       type: 'datetime',
-//       categories: ['01/01/2021', '02/01/2021', '03/01/2021', '04/01/2021', '05/01/2021', '06/01/2021', '07/01/2021'],
-//     },
-//     legend: {
-//       position: 'top',
-//     },
-//     fill: {
-//       opacity: 1,
-//     },
-//   };
-
-//   return (
-//     <div className="col-xl-6">
-//       <div className="card">
-//         <div className="card-header">
-//           <h4 className="card-title mb-0">Unresolved Tickets by Priority</h4>
-//         </div>
-//         <div className="card-body">
-//           <ReactApexChart options={options} series={series} type="bar" height={350} />
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
 const NumberOfTickets = ({ series, total }) => {
-  console.log('Series data:', series);
-  console.log('Total:', total);
-
   const chartRef = useRef(null);
 
   const options = {
@@ -140,23 +91,32 @@ const NumberOfTickets = ({ series, total }) => {
   );
 };
 
-
 const Claim = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [stats, setStats] = useState([]);
   const [ticketCounts, setTicketCounts] = useState([0, 0, 0, 0]);
   const [totalTickets, setTotalTickets] = useState(0);
+  const [deletedTickets, setDeletedTickets] = useState(() => {
+    const savedCount = localStorage.getItem('deletedTickets');
+    return savedCount ? parseInt(savedCount, 10) : 0;
+  });
 
   const handleAddModal = () => {
     setShowAddModal(!showAddModal);
   };
 
+  const handleDelete = () => {
+    setDeletedTickets(prevDeleted => {
+      const newCount = prevDeleted + 1;
+      localStorage.setItem('deletedTickets', newCount);
+      return newCount;
+    });
+  };
+
   useEffect(() => {
     const fetchClaims = async () => {
       try {
-        const building_id = '65e8c16b40b8b3418ee6a075';
-        const response = await axiosInstance.get(`/${building_id}/claims`);
-        console.log("claim data:", response);
+        const response = await axiosInstance.get(`/all`);
         const claims = response.data.claims;
 
         const totalTickets = claims.length;
@@ -164,7 +124,6 @@ const Claim = () => {
         const closedTickets = claims.filter(claim => claim.status === 'closed').length;
         const newTickets = claims.filter(claim => claim.status === 'new').length;
         const inprogressTickets = claims.filter(claim => claim.status === 'inprogress').length;
-        const deletedTickets = 0; 
 
         setStats([
           { title: "Total Tickets", count: totalTickets, icon: "ri-ticket-2-line", },
@@ -181,7 +140,7 @@ const Claim = () => {
     };
 
     fetchClaims();
-  }, []);
+  }, [deletedTickets]); // Add deletedTickets as a dependency to re-fetch when a ticket is deleted
 
   return (
     <div className="main-content">
@@ -202,14 +161,14 @@ const Claim = () => {
           </div>
           <div className="row">
             <UserCards stats={stats} />
-            {/* <UnresolvedTicketsByPriority /> */}
             <NumberOfTickets series={ticketCounts} total={totalTickets} />
           </div>
-          <ClaimList onAddClick={handleAddModal} />
+          <ClaimList onDelete={handleDelete} />
           {showAddModal && <AddClaim handleClose={handleAddModal} />}
         </div>
       </div>
     </div>
   );
 };
+
 export default Claim;

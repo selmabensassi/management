@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axiosInstance from '../../config/axiosConfig';
 import InvoiceList from './invoiceList';
+import { RiAddCircleFill } from 'react-icons/ri';
+import CreateInvoice from './invoiceCreate'; 
 
 const InvoiceCards = ({ InvoiceData }) => {
   return (
@@ -29,24 +31,27 @@ const InvoiceCards = ({ InvoiceData }) => {
 
 export default function InvoiceManagement() {
   const [invoiceData, setInvoiceData] = useState([]);
+  const [sentInvoiceCount, setSentInvoiceCount] = useState(0);
 
   useEffect(() => {
     const fetchInvoices = async () => {
       try {
-        const response = await axiosInstance.get('/payments/all'); // Adjust the endpoint as needed
-        setInvoiceData(response.data);
+        const response = await axiosInstance.get('/invoices/all');
+        console.log('payments data :', response.data);
+        setInvoiceData(Array.isArray(response.data) ? response.data : []);
       } catch (error) {
         console.error('Failed to fetch payment data:', error);
+        setInvoiceData([]);
       }
     };
 
     fetchInvoices();
-  }, []);
+  }, [invoiceData]);
 
-  const totalInvoices = invoiceData.length;
-  const paidInvoices = invoiceData.filter(invoice => invoice.status === 'paid').length;
-  const unpaidInvoices = invoiceData.filter(invoice => invoice.status === 'pending').length;
-  const cancelledInvoices = invoiceData.filter(invoice => invoice.status === 'cancelled').length;
+  const totalInvoices = invoiceData.length + sentInvoiceCount;
+  const paidInvoices = invoiceData.filter(invoice => invoice.paymentStatus === 'paid').length;
+  const unpaidInvoices = invoiceData.filter(invoice => invoice.paymentStatus === 'Unpaid').length;
+  const cancelledInvoices = invoiceData.filter(invoice => invoice.paymentStatus === 'cancelled').length;
 
   const InvoiceData = [
     {
@@ -81,7 +86,7 @@ export default function InvoiceManagement() {
         <div className="row mb-4">
           <InvoiceCards InvoiceData={InvoiceData} />
         </div>
-        <InvoiceList />
+        <InvoiceList setSentInvoiceCount={setSentInvoiceCount} /> 
       </div>
     </div>
   );
