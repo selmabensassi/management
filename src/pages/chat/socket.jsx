@@ -1,6 +1,6 @@
 import { io } from 'socket.io-client';
 
-const SOCKET_URL = 'ws://localhost:8000'; 
+const SOCKET_URL = 'ws:https://syndicatebackend.netlify.app'; 
 
 const socket = io(SOCKET_URL, {
   transports: ['websocket'],

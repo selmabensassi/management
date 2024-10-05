@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const baseUrl = 'http://localhost:8000';
+const baseUrl = 'https://syndicatebackend.netlify.app';
 
 const axiosInstance = axios.create({
   baseURL: baseUrl,

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axiosInstance from '../../config/axiosConfig';
-import userDummyImg from 'C:/Users/selma/Desktop/management/src/assets/images/users/user-dummy-img.jpg';
+import userDummyImg from '../../../public/images/avatar-2.jpg';
 
 const ChatSidebar = ({ setCurrentChat }) => {
   const [users, setUsers] = useState([]);

@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import socket from './socket';
 import axiosInstance from '../../config/axiosConfig';
 import moment from 'moment';
-import userDummyImg from 'C:/Users/selma/Desktop/management/src/assets/images/users/user-dummy-img.jpg';
+import userDummyImg from '../../../public/images/avatar-2.jpg';
 
 const ChatMessages = ({ currentChat }) => {
   const [messages, setMessages] = useState([]);
